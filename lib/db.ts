@@ -5,18 +5,22 @@
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+/** Local PostgREST root (no /rest/v1 prefix). Falls back to Supabase cloud shape. */
+const restRoot =
+  process.env.POSTGREST_URL?.replace(/\/$/, "") ||
+  (url ? `${url.replace(/\/$/, "")}/rest/v1` : null);
 
 export function dbConfigured(): boolean {
-  return Boolean(url && anonKey);
+  return Boolean(restRoot && anonKey);
 }
 
 export async function rest<T>(
   path: string,
   revalidateSeconds = 300
 ): Promise<T | null> {
-  if (!url || !anonKey) return null;
+  if (!restRoot || !anonKey) return null;
   try {
-    const res = await fetch(`${url}/rest/v1/${path}`, {
+    const res = await fetch(`${restRoot}/${path}`, {
       headers: {
         apikey: anonKey,
         Authorization: `Bearer ${anonKey}`,

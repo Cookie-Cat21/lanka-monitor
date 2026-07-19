@@ -1,64 +1,92 @@
 # Lanka Monitor
 
-Real-time situational awareness dashboard for Sri Lanka — money, weather, power, health, news.
+Real-time situational awareness dashboard for Sri Lanka — money, weather, power, health, news, cricket.
 
 One surface where the rupee, the fuel price, the power cut and the news pulse explain each
-other. Built for the morning check on a phone: is the rupee moving, is it going to rain,
-is the power out, what happened overnight.
+other. Built for the morning check on a phone.
 
 **Trust is the product.** Every card carries its own timestamp and freshness badge. When a
 scraper breaks, the card visibly goes stale — stale data is surfaced, never silently served.
 
+Phase status: see [`docs/PHASES.md`](docs/PHASES.md). UI research: [`docs/UI_COMPONENTS.md`](docs/UI_COMPONENTS.md).
+
 ## Stack
 
-- **Frontend**: Next.js 15 (App Router) · TypeScript · Tailwind CSS · Framer Motion
-- **Database**: Postgres (Supabase) with PostGIS + pgvector
+- **Frontend**: Next.js 15 (App Router) · TypeScript · Tailwind CSS · Framer Motion · MapLibre
+- **Database**: Postgres (PostGIS + pgvector) via Supabase in prod, or local PostgREST
 - **Ingest**: Python workers in [`/ingest`](ingest/) — one subclass per source
-- **Maps** (later phases): MapLibre GL JS
-- **Hosting**: Vercel, with Vercel Cron driving the ingest worker
+- **Hosting**: Vercel Cron + GitHub Actions backup
 
 ## Local setup
 
+Supabase cloud can wait — use a local DB until invoices are settled.
+
 ```bash
-# 1. Frontend
 npm install
-cp .env.example .env.local   # fill in Supabase URL + keys
-npm run dev                  # http://localhost:3000
-
-# 2. Database — apply migrations (Supabase SQL editor or CLI)
-#    supabase/migrations/0001_init.sql
-#    supabase/migrations/0002_seed_sources.sql
-
-# 3. Ingest worker (Python 3.11+)
 pip install -r ingest/requirements.txt
-python -m ingest.run         # runs every active source once
+
+# Preferred: Docker (Postgres + PostgREST)
+docker compose up -d
+./scripts/local-db-init.sh
+cp .env.local.example .env.local
+
+# Or host Postgres + PostgREST binary (no Docker daemon):
+#   create DB lanka_monitor, apply scripts/local-db-bootstrap.sql
+#   LOCAL_DB_PORT=5432 LOCAL_DB_PASSWORD= ./scripts/local-db-init.sh
+#   ./scripts/start-local-postgrest.sh   # listens on :54321
+#   cp .env.local.example .env.local
+
+npm run dev                  # http://localhost:3000
+python -m ingest.run         # every active source once → /health goes green
 ```
 
-## API
+`POSTGREST_URL` in `.env.local` points the Next app and ingest workers at PostgREST
+root (no `/rest/v1` prefix). Swap to real Supabase URL + keys when cloud is ready —
+same migrations, same schema.
 
-- `GET /api/v1/health` — freshness status of every source (`fresh` / `stale` / `down` / `inactive`)
-- `GET /api/v1/fx` — latest USD/LKR buy/sell observations + 30-day series
+## Public API
 
-## Data sources
+| Route | Data |
+|---|---|
+| `GET /api/v1/health` | Source freshness |
+| `GET /api/v1/fx` | USD/LKR + series |
+| `GET /api/v1/cse` | ASPI |
+| `GET /api/v1/fuel` | CPC pump prices |
+| `GET /api/v1/weather` | Colombo conditions |
+| `GET /api/v1/power` | Active outage count |
+| `GET /api/v1/news` | Recent headlines |
+| `GET /api/v1/brief` | Daily brief (EN/SI/TA) |
+| `GET /api/v1/dengue` | Weekly cases |
+| `GET /api/v1/aqi` | Colombo AQI |
+| `GET /api/v1/cricket` | Scores (needs key) |
+| `GET /api/og` | Dynamic OG image |
 
-We scrape public government and institutional websites. Attribution is part of scraping
-ethically — every number on the dashboard credits where it came from:
+Human docs: [`/docs`](/docs). Machine: [`/llms.txt`](/llms.txt).
 
-| Source | Data | Status |
-|---|---|---|
-| [Central Bank of Sri Lanka](https://www.cbsl.gov.lk/) | Daily indicative USD/LKR buy/sell exchange rates | **live** |
-| [Colombo Stock Exchange](https://www.cse.lk/) | All Share Index | planned |
-| [CEYPETCO](https://ceypetco.gov.lk/) | Fuel prices | planned |
-| [Department of Meteorology](https://meteo.gov.lk/) | Weather forecasts & warnings | planned |
-| [Ceylon Electricity Board](https://cebcare.ceb.lk/) | Power interruption schedules | planned |
-| [Epidemiology Unit, Ministry of Health](https://www.epid.gov.lk/) | Disease surveillance (dengue etc.) | planned |
-| Sri Lankan news RSS feeds ([Ada Derana](https://www.adaderana.lk/) and others) | News pulse | planned |
+## Ingest sources
 
-Our scrapers identify themselves honestly (`LankaMonitorBot` User-Agent with a contact URL),
-run at conservative cadences with backoff, and cache server-side — a page load on this
-dashboard never triggers a request to a government website.
+| Source | Status |
+|---|---|
+| CBSL FX | live |
+| CSE ASPI | live |
+| Octane / CEYPETCO fuel | live |
+| Open-Meteo weather | live |
+| CEB Care outages | live |
+| USGS quakes | live |
+| News RSS | live |
+| Desk/Claude brief | live (desk without key) |
+| Dengue Data Hub | ready (activate 0007) |
+| OpenAQ Colombo | needs `OPENAQ_API_KEY` |
+| Cricket | needs `CRICKET_API_KEY` |
+| Gold / HARTI PDF / DMC | stubbed — verify before scrape |
 
-If you operate one of these sources and have concerns, open an issue.
+Scrapers identify as `LankaMonitorBot` with a contact URL, run at conservative cadences,
+and never let a page load hit a government site directly (except Open-Meteo free API as
+cached fallback when the DB is empty).
+
+## Soft launch
+
+Chase **D7 retention**, not Hacker News. Soft channels: LK Discord, r/srilanka, LinkedIn.
 
 ## Licence
 

@@ -88,6 +88,10 @@ class Source(ABC):
                     time.sleep(BACKOFF_SECONDS * attempt)
         raise last_exc  # type: ignore[misc]
 
+    def articles(self) -> list[dict[str, Any]]:
+        """Override to produce article rows for upsert_articles. Default: empty."""
+        return []
+
     def run(self, db: Db) -> RunResult:
         """fetch -> normalise -> upsert -> report health. Never raises."""
         started = time.monotonic()
@@ -108,6 +112,9 @@ class Source(ABC):
                 for o in observations
             ]
             count = db.upsert_observations(rows)
+            article_rows = self.articles()
+            if article_rows:
+                db.upsert_articles(article_rows)
         except Exception as exc:  # noqa: BLE001 — rule 1: record, don't raise
             error = f"{type(exc).__name__}: {exc}"[:1000]
             logger.exception("source %s failed", self.id)

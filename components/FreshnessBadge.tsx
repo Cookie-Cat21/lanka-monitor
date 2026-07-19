@@ -1,21 +1,35 @@
 import type { FreshnessStatus } from "@/lib/types";
+import RelativeTime from "@/components/RelativeTime";
 
-const STYLES: Record<FreshnessStatus, { dot: string; label: string; text: string }> = {
-  fresh: { dot: "bg-fresh", label: "fresh", text: "text-fresh" },
-  stale: { dot: "bg-stale", label: "stale", text: "text-stale" },
-  down: { dot: "bg-down", label: "down", text: "text-down" },
-  inactive: { dot: "bg-zinc-600", label: "coming soon", text: "text-zinc-500" },
+const STYLES: Record<
+  FreshnessStatus,
+  { dot: string; label: string; text: string; pill: string }
+> = {
+  fresh: {
+    dot: "bg-fresh",
+    label: "fresh",
+    text: "text-fresh",
+    pill: "bg-fresh/10",
+  },
+  stale: {
+    dot: "bg-stale",
+    label: "stale",
+    text: "text-stale",
+    pill: "bg-stale/10",
+  },
+  down: {
+    dot: "bg-down",
+    label: "down",
+    text: "text-down",
+    pill: "bg-down/10",
+  },
+  inactive: {
+    dot: "bg-muted",
+    label: "soon",
+    text: "text-muted",
+    pill: "bg-accent-soft",
+  },
 };
-
-function relativeTime(iso: string | null): string {
-  if (!iso) return "no data yet";
-  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 48) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
-}
 
 export default function FreshnessBadge({
   status,
@@ -25,21 +39,33 @@ export default function FreshnessBadge({
   lastSuccessAt: string | null;
 }) {
   const s = STYLES[status];
+  const aria =
+    status === "inactive"
+      ? "Source coming soon"
+      : `Source ${s.label}${lastSuccessAt ? `, last success ${lastSuccessAt}` : ", no data yet"}`;
+
   return (
     <span
-      className="inline-flex items-center gap-1.5 text-xs text-text-dim"
+      role="status"
+      aria-label={aria}
+      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-medium ${s.pill}`}
       title={`Source status: ${s.label}`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${s.dot} ${
-          status === "fresh" ? "" : status === "inactive" ? "" : "animate-pulse"
+          status === "down" ? "animate-pulse" : ""
         }`}
+        aria-hidden
       />
       <span className={s.text}>{s.label}</span>
       {status !== "inactive" && (
         <>
-          <span aria-hidden>·</span>
-          <time>{relativeTime(lastSuccessAt)}</time>
+          <span className="text-muted/60" aria-hidden>
+            ·
+          </span>
+          <span className="font-normal text-muted">
+            <RelativeTime iso={lastSuccessAt} />
+          </span>
         </>
       )}
     </span>
