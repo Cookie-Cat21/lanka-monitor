@@ -58,6 +58,21 @@ class Db:
         res.raise_for_status()
         return len(rows)
 
+    def upsert_articles(self, rows: list[dict[str, Any]]) -> int:
+        if not rows:
+            return 0
+        res = requests.post(
+            f"{self.url}/rest/v1/articles",
+            json=rows,
+            headers=self._headers(
+                {"Prefer": "resolution=merge-duplicates,return=minimal"}
+            ),
+            params={"on_conflict": "url"},
+            timeout=30,
+        )
+        res.raise_for_status()
+        return len(rows)
+
     def last_consecutive_failures(self, source_id: str) -> int:
         res = requests.get(
             f"{self.url}/rest/v1/source_health",
@@ -109,3 +124,93 @@ class Db:
         )
         res.raise_for_status()
         return [row["id"] for row in res.json()]
+
+    def list_recent_articles(self, hours: int = 24, limit: int = 50) -> list[dict[str, Any]]:
+        from datetime import datetime, timedelta, timezone
+
+        cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+        res = requests.get(
+            f"{self.url}/rest/v1/articles",
+            headers=self._headers(),
+            params={
+                "published_at": f"gte.{cutoff}",
+                "select": "id,url,title,summary,published_at,meta",
+                "order": "published_at.desc",
+                "limit": str(limit),
+            },
+            timeout=30,
+        )
+        res.raise_for_status()
+        return res.json()
+
+    def get_latest_observation(self, source_id: str, metric: str) -> float | None:
+        res = requests.get(
+            f"{self.url}/rest/v1/observations",
+            headers=self._headers(),
+            params={
+                "source_id": f"eq.{source_id}",
+                "metric": f"eq.{metric}",
+                "select": "value",
+                "order": "observed_at.desc",
+                "limit": "1",
+            },
+            timeout=30,
+        )
+        res.raise_for_status()
+        rows = res.json()
+        return float(rows[0]["value"]) if rows else None
+
+    def get_latest_brief(self) -> dict[str, Any] | None:
+        res = requests.get(
+            f"{self.url}/rest/v1/briefs",
+            headers=self._headers(),
+            params={
+                "select": "id,brief_date,content,model,meta,created_at",
+                "order": "brief_date.desc",
+                "limit": "1",
+            },
+            timeout=30,
+        )
+        res.raise_for_status()
+        rows = res.json()
+        return rows[0] if rows else None
+
+    def upsert_brief(
+        self,
+        brief_date: str,
+        content: str,
+        model: str,
+        meta: dict[str, Any],
+    ) -> None:
+        res = requests.post(
+            f"{self.url}/rest/v1/briefs",
+            json={
+                "brief_date": brief_date,
+                "content": content,
+                "model": model,
+                "meta": meta,
+            },
+            headers=self._headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
+            params={"on_conflict": "brief_date"},
+            timeout=30,
+        )
+        res.raise_for_status()
+
+    def count_brief_generations_today(self) -> int:
+        """Count brief_gen runs today that actually wrote a brief (observations_count > 0)."""
+        from datetime import date
+
+        today_start = date.today().isoformat() + "T00:00:00+00:00"
+        res = requests.get(
+            f"{self.url}/rest/v1/source_health",
+            headers=self._headers(),
+            params={
+                "source_id": "eq.brief_gen",
+                "observations_count": "gt.0",
+                "run_at": f"gte.{today_start}",
+                "select": "id",
+            },
+            timeout=30,
+        )
+        res.raise_for_status()
+        return len(res.json())
