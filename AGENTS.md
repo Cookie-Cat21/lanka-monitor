@@ -35,7 +35,8 @@ doesn't fit a new source, extend it — don't fork it.
 
 ## Phase focus
 
-- Phase 1 Money: CBSL FX ✅ · CSE · Fuel (Octane)
-- Phase 2 Safety: Weather · Power · Quakes · Cricket · MapLibre layers
-- Phase 3 Brief: RSS · clustering · Claude trilingual brief (quality gate: no slop)
-- Phase 5 Depth only after D7 retention is proven
+See `docs/PHASES.md` for the full checklist. Phases 0–5 are implemented in code;
+Phase 6 satellite is parked.
+
+Ops still required: settle Supabase, run migrations 0001–0007, set env keys,
+green the freshness badges with a real ingest run.

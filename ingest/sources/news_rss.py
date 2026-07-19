@@ -34,6 +34,8 @@ logger = logging.getLogger("ingest.news_rss")
 FEEDS: list[dict[str, str]] = [
     {"id": "adaderana", "name": "Ada Derana", "url": "https://www.adaderana.lk/rss.php"},
     {"id": "economynext", "name": "EconomyNext", "url": "https://economynext.com/feed/"},
+    {"id": "newswire", "name": "Newswire", "url": "https://www.newswire.lk/feed/"},
+    # Daily Mirror often 403s our bot — kept for when access returns.
     {"id": "dailymirror", "name": "Daily Mirror", "url": "https://www.dailymirror.lk/rss"},
 ]
 

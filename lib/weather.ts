@@ -1,4 +1,5 @@
-import type { WeatherData } from "./types";
+import { rest } from "./db";
+import type { Observation, SourceStatus, WeatherData } from "./types";
 
 /** WMO weather interpretation codes → human label. */
 const WMO_LABELS: Record<number, string> = {
@@ -17,12 +18,9 @@ const WMO_LABELS: Record<number, string> = {
   71: "Light snow",
   73: "Moderate snow",
   75: "Heavy snow",
-  77: "Snow grains",
   80: "Rain showers",
   81: "Moderate showers",
   82: "Violent showers",
-  85: "Snow showers",
-  86: "Heavy snow showers",
   95: "Thunderstorm",
   96: "Thunderstorm w/ hail",
   99: "Severe thunderstorm",
@@ -50,7 +48,70 @@ interface OpenMeteoResponse {
 const COLOMBO_LAT = 6.9271;
 const COLOMBO_LON = 79.8612;
 
+const METRICS = [
+  "weather_temp_c",
+  "weather_humidity_pct",
+  "weather_precip_mm",
+  "weather_wind_kmh",
+  "weather_code",
+  "weather_precip_prob_pct",
+] as const;
+
+/** Prefer ingested observations; fall back to Open-Meteo (server-cached). */
 export async function getWeatherData(): Promise<WeatherData> {
+  const fromDb = await fromObservations();
+  if (fromDb.current) return fromDb;
+  return fromOpenMeteo();
+}
+
+export async function getWeatherSourceStatus(): Promise<SourceStatus | null> {
+  const statuses = await rest<SourceStatus[]>(
+    "source_status?select=*&id=eq.open_meteo",
+    120,
+  );
+  return statuses?.[0] ?? null;
+}
+
+async function fromObservations(): Promise<WeatherData> {
+  const since = new Date(Date.now() - 6 * 3600 * 1000).toISOString();
+  const rows = await rest<Observation[]>(
+    `observations?source_id=eq.open_meteo&metric=in.(${METRICS.join(",")})` +
+      `&observed_at=gte.${since}&order=observed_at.desc&select=metric,value,observed_at`,
+    300,
+  );
+  if (!rows || rows.length === 0) {
+    return { current: null, precip_pct_next6h: null, location: "Colombo" };
+  }
+
+  const latestByMetric = new Map<string, Observation>();
+  for (const row of rows) {
+    if (!latestByMetric.has(row.metric)) latestByMetric.set(row.metric, row);
+  }
+
+  const temp = latestByMetric.get("weather_temp_c");
+  if (!temp) {
+    return { current: null, precip_pct_next6h: null, location: "Colombo" };
+  }
+
+  const code = Number(latestByMetric.get("weather_code")?.value ?? 0);
+  const precipProb = latestByMetric.get("weather_precip_prob_pct");
+
+  return {
+    current: {
+      temp_c: Number(temp.value),
+      rain_mm: Number(latestByMetric.get("weather_precip_mm")?.value ?? 0),
+      wind_kmh: Number(latestByMetric.get("weather_wind_kmh")?.value ?? 0),
+      humidity_pct: Number(latestByMetric.get("weather_humidity_pct")?.value ?? 0),
+      weather_code: code,
+      weather_label: wmoLabel(code),
+      observed_at: temp.observed_at,
+    },
+    precip_pct_next6h: precipProb != null ? Number(precipProb.value) : null,
+    location: "Colombo",
+  };
+}
+
+async function fromOpenMeteo(): Promise<WeatherData> {
   const params = new URLSearchParams({
     latitude: String(COLOMBO_LAT),
     longitude: String(COLOMBO_LON),
@@ -64,13 +125,17 @@ export async function getWeatherData(): Promise<WeatherData> {
   try {
     const res = await fetch(
       `https://api.open-meteo.com/v1/forecast?${params}`,
-      { next: { revalidate: 1800 } }
+      { next: { revalidate: 1800 } },
     );
-    if (!res.ok) return { current: null, precip_pct_next6h: null, location: "Colombo" };
+    if (!res.ok) {
+      return { current: null, precip_pct_next6h: null, location: "Colombo" };
+    }
 
     const body = (await res.json()) as OpenMeteoResponse;
     const c = body.current;
-    if (!c) return { current: null, precip_pct_next6h: null, location: "Colombo" };
+    if (!c) {
+      return { current: null, precip_pct_next6h: null, location: "Colombo" };
+    }
 
     let precip_pct_next6h: number | null = null;
     if (body.hourly) {

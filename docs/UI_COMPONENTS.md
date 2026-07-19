@@ -103,19 +103,19 @@ Each loop: evaluate → apply / defer / skip. Applied in this PR marked ✅.
 | 28 | Focus-visible rings on footer links | ✅ |
 | 29 | `lang` on html for future brief | ✅ |
 | 30 | Tabular nums utility class retained | ✅ |
-| 31 | Tremor Tracker for power — defer to Phase 2 | ⏸ |
-| 32 | shadcn Tabs for map layers — defer Phase 2 | ⏸ |
-| 33 | Brief card EN/SI/TA — defer Phase 3 | ⏸ |
-| 34 | News ClusterList — defer Phase 3 | ⏸ |
-| 35 | Weather warning banner S4 sticky — defer Phase 2 | ⏸ |
-| 36 | Cricket compact scorecard — defer Phase 2 | ⏸ |
-| 37 | Fuel 2×2 Octane card — defer Phase 1 fuel | ⏸ |
-| 38 | Dengue SVG choropleth — defer Phase 5 | ⏸ |
-| 39 | Coconut Index share page | ✅ (prior) |
-| 40 | OG image generator — defer Phase 4 | ⏸ |
-| 41 | Telegram CTA (quiet header link) — defer Phase 4 | ⏸ |
-| 42 | Language switcher — defer Phase 3 | ⏸ |
-| 43 | Skeleton only while fetching — defer until DB live | ⏸ |
+| 31 | Tremor Tracker for power | ✅ PowerCard + Tracker |
+| 32 | MapLibre layer FAB / bottom sheet | ✅ SituationMap |
+| 33 | Brief card EN/SI/TA | ✅ BriefCard + brief_gen |
+| 34 | News ClusterList | ✅ NewsPulseCard + Jaccard |
+| 35 | Life-safety AlertBanner | ✅ seismic S4+ |
+| 36 | Cricket compact scorecard | ✅ needs API key |
+| 37 | Fuel 2×2 Octane card | ✅ |
+| 38 | Dengue district bars | ✅ DengueCard |
+| 39 | Coconut Index share page | ✅ (demo until HARTI PDF) |
+| 40 | OG image generator | ✅ /api/og |
+| 41 | Telegram CTA + send API | ✅ |
+| 42 | Language switcher | ✅ |
+| 43 | Skeleton while fetching | ⏸ until Supabase live |
 | 44 | DaisyUI adoption | ❌ skip |
 | 45 | Magic UI Animated Beam | ❌ skip |
 | 46 | Aceternity Apple Cards | ❌ skip |

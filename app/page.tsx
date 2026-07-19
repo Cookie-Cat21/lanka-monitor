@@ -14,13 +14,15 @@ import PowerCard from "@/components/cards/PowerCard";
 import SeismicWatchCard from "@/components/cards/SeismicWatchCard";
 import WeatherCard from "@/components/cards/WeatherCard";
 import AlertBanner from "@/components/AlertBanner";
+import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 import HolidayGlance from "@/components/HolidayGlance";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import SituationMapLoader from "@/components/maps/SituationMapLoader";
 import { getAqiData } from "@/lib/aqi";
 import { getBriefData } from "@/lib/brief";
-import { getCseData, getCseSourceStatus } from "@/lib/cse";
+import { getCoconutIndexData } from "@/lib/coconut-index";
 import { getCricketData } from "@/lib/cricket";
+import { getCseData, getCseSourceStatus } from "@/lib/cse";
 import { getDengueData } from "@/lib/dengue";
 import { getFuelData, getFuelSourceStatus } from "@/lib/fuel";
 import { getFxData, getSourceStatuses } from "@/lib/fx";
@@ -30,8 +32,7 @@ import { getNewsData } from "@/lib/news";
 import { getPowerData, getPowerSourceStatus } from "@/lib/power";
 import { getSeismicWatchData } from "@/lib/seismic";
 import { getSlcesiData } from "@/lib/slcesi";
-import { getWeatherData } from "@/lib/weather";
-import { getCoconutIndexData } from "@/lib/coconut-index";
+import { getWeatherData, getWeatherSourceStatus } from "@/lib/weather";
 import type { Metadata } from "next";
 
 export const revalidate = 120;
@@ -64,6 +65,7 @@ export default async function Dashboard() {
     fuel,
     fuelSource,
     weather,
+    weatherSource,
     power,
     powerSource,
     news,
@@ -84,6 +86,7 @@ export default async function Dashboard() {
     getFuelData(),
     getFuelSourceStatus(),
     getWeatherData(),
+    getWeatherSourceStatus(),
     getPowerData(),
     getPowerSourceStatus(),
     getNewsData(),
@@ -101,6 +104,7 @@ export default async function Dashboard() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 pb-10 pt-0 sm:px-6 sm:pb-12">
+      <AnalyticsBeacon path="/" />
       {/* ── Sticky header ─────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-10 -mx-4 mb-4 border-b border-panel-edge/60 bg-ink/90 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:mb-6 sm:px-6 sm:py-4">
         <div className="flex items-start justify-between gap-3">
@@ -167,7 +171,7 @@ export default async function Dashboard() {
           Today
         </p>
         <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
-          <WeatherCard weather={weather} />
+          <WeatherCard weather={weather} source={weatherSource} />
           <PowerCard power={power} source={powerSource} />
           <CricketCard cricket={cricket} />
         </div>

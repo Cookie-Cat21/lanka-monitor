@@ -1,42 +1,45 @@
 "use client";
 
-import { CloudRain, Wind, Thermometer, Droplets } from "lucide-react";
+import { Cloud, CloudRain, Droplets, Wind } from "lucide-react";
 import CardShell from "@/components/CardShell";
-import type { WeatherData } from "@/lib/types";
+import type { SourceStatus, WeatherData } from "@/lib/types";
 
 function WeatherCodeIcon({ code }: { code: number }) {
-  if (code >= 95) return <span className="text-2xl" aria-hidden>⛈️</span>;
-  if (code >= 80) return <span className="text-2xl" aria-hidden>🌧️</span>;
-  if (code >= 61) return <span className="text-2xl" aria-hidden>🌧️</span>;
-  if (code >= 51) return <span className="text-2xl" aria-hidden>🌦️</span>;
-  if (code >= 45) return <span className="text-2xl" aria-hidden>🌫️</span>;
-  if (code === 3) return <span className="text-2xl" aria-hidden>☁️</span>;
-  if (code === 2) return <span className="text-2xl" aria-hidden>⛅</span>;
-  return <span className="text-2xl" aria-hidden>☀️</span>;
+  if (code >= 51) {
+    return <CloudRain className="h-8 w-8 text-sky-400/90" strokeWidth={1.5} aria-hidden />;
+  }
+  return <Cloud className="h-8 w-8 text-zinc-400" strokeWidth={1.5} aria-hidden />;
 }
 
-export default function WeatherCard({ weather }: { weather: WeatherData }) {
+export default function WeatherCard({
+  weather,
+  source,
+}: {
+  weather: WeatherData;
+  source?: SourceStatus | null;
+}) {
   const c = weather.current;
-  const status = c ? "fresh" : "down";
+  const status = source?.status ?? (c ? "fresh" : "down");
 
   return (
     <CardShell
       title="Weather"
       subtitle={weather.location}
       status={status}
-      lastSuccessAt={c?.observed_at ?? null}
+      lastSuccessAt={source?.last_success_at ?? c?.observed_at ?? null}
       footer={
         c ? (
           <>
             Open-Meteo · observed{" "}
-            <time className="tabular">{c.observed_at.slice(0, 16).replace("T", " ")}</time>
+            <time className="tabular">
+              {c.observed_at.slice(0, 16).replace("T", " ")}
+            </time>
           </>
         ) : undefined
       }
     >
       {c ? (
         <div className="space-y-3">
-          {/* Hero: temperature + condition */}
           <div className="flex items-center gap-3">
             <WeatherCodeIcon code={c.weather_code} />
             <div>
@@ -48,15 +51,16 @@ export default function WeatherCard({ weather }: { weather: WeatherData }) {
             </div>
           </div>
 
-          {/* Secondary metrics row */}
           <div className="grid grid-cols-3 gap-2">
             <div className="flex items-center gap-1.5">
               <CloudRain className="h-3.5 w-3.5 shrink-0 text-text-dim" aria-hidden />
               <div>
-                <div className="tabular text-sm font-medium">{c.rain_mm.toFixed(1)} mm</div>
+                <div className="tabular text-sm font-medium">
+                  {c.rain_mm.toFixed(1)} mm
+                </div>
                 {weather.precip_pct_next6h !== null && (
                   <div className="text-[10px] text-text-dim">
-                    {weather.precip_pct_next6h}% next 6 h
+                    {weather.precip_pct_next6h}% rain chance
                   </div>
                 )}
               </div>
@@ -64,7 +68,9 @@ export default function WeatherCard({ weather }: { weather: WeatherData }) {
             <div className="flex items-center gap-1.5">
               <Wind className="h-3.5 w-3.5 shrink-0 text-text-dim" aria-hidden />
               <div>
-                <div className="tabular text-sm font-medium">{c.wind_kmh.toFixed(0)} km/h</div>
+                <div className="tabular text-sm font-medium">
+                  {c.wind_kmh.toFixed(0)} km/h
+                </div>
                 <div className="text-[10px] text-text-dim">wind</div>
               </div>
             </div>
@@ -79,8 +85,8 @@ export default function WeatherCard({ weather }: { weather: WeatherData }) {
         </div>
       ) : (
         <div className="py-6 text-sm text-text-dim">
-          Weather data unavailable — Open-Meteo unreachable. This card refuses
-          to guess.
+          Weather data unavailable — source is{" "}
+          <span className="text-down">{status}</span>. This card refuses to guess.
         </div>
       )}
     </CardShell>
