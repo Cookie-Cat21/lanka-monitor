@@ -22,16 +22,24 @@ class DbNotConfigured(RuntimeError):
 class Db:
     url: str
     key: str
+    rest_base: str
 
     @classmethod
     def from_env(cls) -> "Db":
-        url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or os.environ.get("SUPABASE_URL")
+        url = (
+            os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
+            or os.environ.get("SUPABASE_URL")
+            or ""
+        ).rstrip("/")
         key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-        if not url or not key:
+        postgrest = (os.environ.get("POSTGREST_URL") or "").rstrip("/")
+        if not key or (not url and not postgrest):
             raise DbNotConfigured(
-                "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY"
+                "Set POSTGREST_URL (local) or NEXT_PUBLIC_SUPABASE_URL + "
+                "SUPABASE_SERVICE_ROLE_KEY"
             )
-        return cls(url=url.rstrip("/"), key=key)
+        rest_base = postgrest or f"{url}/rest/v1"
+        return cls(url=url or rest_base, key=key, rest_base=rest_base)
 
     def _headers(self, extra: dict[str, str] | None = None) -> dict[str, str]:
         headers = {
@@ -43,11 +51,14 @@ class Db:
             headers.update(extra)
         return headers
 
+    def _rest(self, path: str) -> str:
+        return f"{self.rest_base}/{path.lstrip('/')}"
+
     def upsert_observations(self, rows: list[dict[str, Any]]) -> int:
         if not rows:
             return 0
         res = requests.post(
-            f"{self.url}/rest/v1/observations",
+            self._rest("observations"),
             json=rows,
             headers=self._headers(
                 {"Prefer": "resolution=merge-duplicates,return=minimal"}
@@ -62,7 +73,7 @@ class Db:
         if not rows:
             return 0
         res = requests.post(
-            f"{self.url}/rest/v1/articles",
+            self._rest("articles"),
             json=rows,
             headers=self._headers(
                 {"Prefer": "resolution=merge-duplicates,return=minimal"}
@@ -75,7 +86,7 @@ class Db:
 
     def last_consecutive_failures(self, source_id: str) -> int:
         res = requests.get(
-            f"{self.url}/rest/v1/source_health",
+            self._rest("source_health"),
             headers=self._headers(),
             params={
                 "source_id": f"eq.{source_id}",
@@ -101,7 +112,7 @@ class Db:
         consecutive_failures: int,
     ) -> None:
         res = requests.post(
-            f"{self.url}/rest/v1/source_health",
+            self._rest("source_health"),
             json={
                 "source_id": source_id,
                 "ok": ok,
@@ -117,7 +128,7 @@ class Db:
 
     def active_source_ids(self) -> list[str]:
         res = requests.get(
-            f"{self.url}/rest/v1/sources",
+            self._rest("sources"),
             headers=self._headers(),
             params={"active": "eq.true", "select": "id"},
             timeout=30,
@@ -130,7 +141,7 @@ class Db:
 
         cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
         res = requests.get(
-            f"{self.url}/rest/v1/articles",
+            self._rest("articles"),
             headers=self._headers(),
             params={
                 "published_at": f"gte.{cutoff}",
@@ -145,7 +156,7 @@ class Db:
 
     def get_latest_observation(self, source_id: str, metric: str) -> float | None:
         res = requests.get(
-            f"{self.url}/rest/v1/observations",
+            self._rest("observations"),
             headers=self._headers(),
             params={
                 "source_id": f"eq.{source_id}",
@@ -162,7 +173,7 @@ class Db:
 
     def get_latest_brief(self) -> dict[str, Any] | None:
         res = requests.get(
-            f"{self.url}/rest/v1/briefs",
+            self._rest("briefs"),
             headers=self._headers(),
             params={
                 "select": "id,brief_date,content,model,meta,created_at",
@@ -183,7 +194,7 @@ class Db:
         meta: dict[str, Any],
     ) -> None:
         res = requests.post(
-            f"{self.url}/rest/v1/briefs",
+            self._rest("briefs"),
             json={
                 "brief_date": brief_date,
                 "content": content,
@@ -202,7 +213,7 @@ class Db:
 
         today_start = date.today().isoformat() + "T00:00:00+00:00"
         res = requests.get(
-            f"{self.url}/rest/v1/source_health",
+            self._rest("source_health"),
             headers=self._headers(),
             params={
                 "source_id": "eq.brief_gen",

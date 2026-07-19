@@ -13,22 +13,36 @@ Phase status: see [`docs/PHASES.md`](docs/PHASES.md). UI research: [`docs/UI_COM
 ## Stack
 
 - **Frontend**: Next.js 15 (App Router) · TypeScript · Tailwind CSS · Framer Motion · MapLibre
-- **Database**: Postgres (Supabase) with PostGIS + pgvector
+- **Database**: Postgres (PostGIS + pgvector) via Supabase in prod, or local PostgREST
 - **Ingest**: Python workers in [`/ingest`](ingest/) — one subclass per source
 - **Hosting**: Vercel Cron + GitHub Actions backup
 
 ## Local setup
 
+Supabase cloud can wait — use a local DB until invoices are settled.
+
 ```bash
 npm install
-cp .env.example .env.local   # fill Supabase URL + keys
-npm run dev                  # http://localhost:3000
-
-# Apply supabase/migrations/0001…0007 in order
-
 pip install -r ingest/requirements.txt
-python -m ingest.run         # every active source once
+
+# Preferred: Docker (Postgres + PostgREST)
+docker compose up -d
+./scripts/local-db-init.sh
+cp .env.local.example .env.local
+
+# Or host Postgres + PostgREST binary (no Docker daemon):
+#   create DB lanka_monitor, apply scripts/local-db-bootstrap.sql
+#   LOCAL_DB_PORT=5432 LOCAL_DB_PASSWORD= ./scripts/local-db-init.sh
+#   ./scripts/start-local-postgrest.sh   # listens on :54321
+#   cp .env.local.example .env.local
+
+npm run dev                  # http://localhost:3000
+python -m ingest.run         # every active source once → /health goes green
 ```
+
+`POSTGREST_URL` in `.env.local` points the Next app and ingest workers at PostgREST
+root (no `/rest/v1` prefix). Swap to real Supabase URL + keys when cloud is ready —
+same migrations, same schema.
 
 ## Public API
 

@@ -4,10 +4,10 @@ import type { NewsArticle, NewsCluster, NewsData } from "./types";
 interface ArticleRow {
   id?: string;
   title: string;
-  source: string | null;
+  source_id: string | null;
   url: string | null;
   published_at: string | null;
-  cluster?: string | null;
+  meta?: { feed?: string; cluster?: string } | null;
 }
 
 function clusterArticles(articles: NewsArticle[]): NewsCluster[] {
@@ -43,41 +43,37 @@ function clusterArticles(articles: NewsArticle[]): NewsCluster[] {
   return clusters;
 }
 
+function mapRow(r: ArticleRow): NewsArticle {
+  return {
+    id: r.id,
+    title: r.title,
+    source: r.meta?.feed ?? r.source_id,
+    url: r.url,
+    published_at: r.published_at,
+    cluster: r.meta?.cluster ?? null,
+  };
+}
+
 export async function getNewsData(): Promise<NewsData> {
   const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
   const rows = await rest<ArticleRow[]>(
-    `articles?select=id,title,source,url,published_at,cluster` +
+    `articles?select=id,title,source_id,url,published_at,meta` +
       `&published_at=gte.${since}&order=published_at.desc&limit=20`,
     120
   );
 
   if (!rows || rows.length === 0) {
-    // Try without date filter — some ingests may batch weekly
+    // Try without date filter — some feeds omit dates
     const fallback = await rest<ArticleRow[]>(
-      `articles?select=id,title,source,url,published_at,cluster` +
-        `&order=published_at.desc&limit=8`,
+      `articles?select=id,title,source_id,url,published_at,meta` +
+        `&order=created_at.desc&limit=8`,
       120
     );
     if (!fallback || fallback.length === 0) return { articles: [], clusters: [] };
-    const articles = fallback.map<NewsArticle>((r) => ({
-      id: r.id,
-      title: r.title,
-      source: r.source,
-      url: r.url,
-      published_at: r.published_at,
-      cluster: r.cluster,
-    }));
+    const articles = fallback.map(mapRow);
     return { articles, clusters: clusterArticles(articles) };
   }
 
-  const articles = rows.map<NewsArticle>((r) => ({
-    id: r.id,
-    title: r.title,
-    source: r.source,
-    url: r.url,
-    published_at: r.published_at,
-    cluster: r.cluster,
-  }));
-
+  const articles = rows.map(mapRow);
   return { articles, clusters: clusterArticles(articles) };
 }

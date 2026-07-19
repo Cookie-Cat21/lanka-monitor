@@ -5,9 +5,10 @@ Strategy context is in the master plan / `docs/UI_COMPONENTS.md` for UI research
 
 ## What already exists
 
-Next.js 15 + Tailwind + Framer Motion, Supabase Postgres (PostGIS + pgvector), Python ingest
-workers under `/ingest`, a `Source` base class, a freshness monitor at `/api/v1/health`, and one
-working source (CBSL FX) proving the pipeline end to end.
+Next.js 15 + Tailwind + Framer Motion, Postgres + PostgREST (local via `docker compose` /
+`scripts/start-local-postgrest.sh`; Supabase in prod when invoices clear), Python ingest
+workers under `/ingest`, a `Source` base class, a freshness monitor at `/api/v1/health`, and
+multiple live sources proving the pipeline end to end.
 
 UI research shortlist and the 50-loop improvement log live in `docs/UI_COMPONENTS.md`.
 
@@ -38,5 +39,5 @@ doesn't fit a new source, extend it — don't fork it.
 See `docs/PHASES.md` for the full checklist. Phases 0–5 are implemented in code;
 Phase 6 satellite is parked.
 
-Ops still required: settle Supabase, run migrations 0001–0007, set env keys,
-green the freshness badges with a real ingest run.
+Ops: local DB path is documented in README. Still needed for prod: settle Supabase,
+point Vercel env at cloud (drop `POSTGREST_URL`), optional API keys, soft launch.

@@ -12,7 +12,7 @@ Updated 2026-07-19. Phase 6 remains **parked** per the master plan.
 | `/api/v1/health` + `/health` UI | ✅ |
 | Dashboard shell, freshness badges | ✅ |
 
-**Gate:** dummy→CBSL FX flows end-to-end when Supabase invoices are settled.
+**Gate:** dummy→CBSL FX flows end-to-end. ✅ via local PostgREST; cloud Supabase still blocked on invoices.
 
 ## Phase 1 — Money ✅
 
@@ -81,7 +81,7 @@ Cheap intermediate when funded: reservoir surface area only.
 
 ## Remaining ops (not code)
 
-1. Settle Supabase invoices → run migrations → set env on Vercel
-2. `python -m ingest.run` once → confirm `/health` greens
+1. **Local DB now:** `docker compose up -d` (or host Postgres + `scripts/start-local-postgrest.sh`) → `./scripts/local-db-init.sh` → `.env.local` → `python -m ingest.run`
+2. Settle Supabase invoices → point env at cloud → drop `POSTGREST_URL`
 3. Set `OPENAQ_API_KEY`, optional `ANTHROPIC_API_KEY`, `CRICKET_API_KEY`, Telegram tokens
 4. Soft launch to LK Discords / r/srilanka / LinkedIn

@@ -1,7 +1,7 @@
 import { rest } from "./db";
 import type { DengueData, DengueDistrict, DengueNational, Observation } from "./types";
 
-const SOURCE_ID = "epidemiology_unit";
+const SOURCE_ID = "dengue_hub";
 
 interface DistrictRow {
   metric: string;

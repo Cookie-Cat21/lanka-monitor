@@ -16,22 +16,28 @@ CBSL FX source, dashboard shell, deploy. Everything after is yours.
 - **Freshness logic** lives in ONE place: the `source_status` SQL view
   (migration 0003). fresh ≤ cadence, stale ≤ 3×, else down. API and UI both read it.
 
-## ⚠️ BLOCKED: Supabase — unpaid invoices
+## ⚠️ BLOCKED for prod: Supabase — unpaid invoices
 
 The Ardeno Studio Supabase org has **overdue invoices**. Both `create_project`
 and restoring the existing paused projects return PaymentRequiredException.
-Until that's settled the DB steps could not be executed. Once settled:
+
+**Local workaround (ready now):** `docker compose up -d` + `./scripts/local-db-init.sh`
++ `.env.local` from `.env.local.example`. Or host Postgres +
+`./scripts/start-local-postgrest.sh`. Verified: FX / fuel / CSE / weather / power /
+dengue / news read through PostgREST with fresh badges after `python -m ingest.run`.
+
+Once Supabase is settled:
 
 1. Create project `lanka-monitor` (region `ap-south-1` is closest to LK).
-2. Run the three files in `supabase/migrations/` in order (SQL editor or CLI).
+2. Run `supabase/migrations/0001`…`0007` in order (SQL editor or CLI).
 3. Set env vars on Vercel + `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`,
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`.
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`
+   (drop `POSTGREST_URL` — cloud uses `/rest/v1`).
 4. Add `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions
    secrets (backup cron in `.github/workflows/ingest.yml`).
 5. Run `python -m ingest.run` once, confirm the badge flips to fresh.
 6. **The stale test**: set `sources.active=false` for a day OR just wait with cron
-   disabled; confirm the badge walks fresh → stale → down. This test was specified
-   as must-pass and could not be run without the DB. Run it before trusting anything.
+   disabled; confirm the badge walks fresh → stale → down.
 
 ## CBSL — what I actually found (Step 6 investigation)
 

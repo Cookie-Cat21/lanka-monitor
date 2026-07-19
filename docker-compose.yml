@@ -1,0 +1,44 @@
+# Local stand-in for Supabase until cloud invoices are settled.
+# Usage:
+#   docker compose up -d
+#   ./scripts/local-db-init.sh   # first time only (migrations)
+#   cp .env.local.example .env.local
+#   npm run dev
+#   python -m ingest.run
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: lanka_local_dev
+      POSTGRES_DB: lanka_monitor
+    ports:
+      - "54322:5432"
+    volumes:
+      - lanka_pg_data:/var/lib/postgresql/data
+      - ./scripts/local-db-bootstrap.sql:/docker-entrypoint-initdb.d/01-bootstrap.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lanka_monitor"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rest:
+    image: postgrest/postgrest:v12.2.3
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:lanka_local_dev@db:5432/lanka_monitor
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      PGRST_DB_EXTRA_SEARCH_PATH: public
+    ports:
+      - "54321:3000"
+
+volumes:
+  lanka_pg_data:
