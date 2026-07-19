@@ -1,0 +1,24 @@
+# Backup ingest schedule. Vercel Cron (vercel.json) is the primary trigger;
+# this workflow exists so ingest keeps running even if the Vercel function
+# path breaks. It is safe to run both — upserts are idempotent.
+# Requires repo secrets: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
+name: ingest
+
+on:
+  schedule:
+    - cron: "45 5,11 * * *" # offset from Vercel cron; UTC (11:15/16:45 Colombo)
+  workflow_dispatch: {}
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r ingest/requirements.txt
+      - run: python -m ingest.run
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
