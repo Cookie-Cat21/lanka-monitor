@@ -1,6 +1,7 @@
 import type { FreshnessStatus } from "@/lib/types";
 import RelativeTime from "@/components/RelativeTime";
 
+/** HyperUI-style themed status pill — colour + label + time (never colour alone). */
 const STYLES: Record<
   FreshnessStatus,
   { dot: string; label: string; text: string; pill: string }
@@ -9,25 +10,25 @@ const STYLES: Record<
     dot: "bg-fresh",
     label: "fresh",
     text: "text-fresh",
-    pill: "bg-fresh/10",
+    pill: "bg-fresh/10 ring-fresh/20",
   },
   stale: {
     dot: "bg-stale",
     label: "stale",
     text: "text-stale",
-    pill: "bg-stale/10",
+    pill: "bg-stale/10 ring-stale/25",
   },
   down: {
     dot: "bg-down",
     label: "down",
     text: "text-down",
-    pill: "bg-down/10",
+    pill: "bg-down/10 ring-down/20",
   },
   inactive: {
-    dot: "bg-zinc-600",
-    label: "coming soon",
-    text: "text-zinc-500",
-    pill: "bg-zinc-800/60",
+    dot: "bg-muted",
+    label: "soon",
+    text: "text-muted",
+    pill: "bg-canvas ring-panel-edge",
   },
 };
 
@@ -48,11 +49,11 @@ export default function FreshnessBadge({
     <span
       role="status"
       aria-label={aria}
-      className={`inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs ${s.pill}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${s.pill}`}
       title={`Source status: ${s.label}`}
     >
       <span
-        className={`h-2 w-2 rounded-full ${s.dot} ${
+        className={`h-1.5 w-1.5 rounded-full ${s.dot} ${
           status === "down" ? "animate-pulse" : ""
         }`}
         aria-hidden
@@ -60,10 +61,10 @@ export default function FreshnessBadge({
       <span className={s.text}>{s.label}</span>
       {status !== "inactive" && (
         <>
-          <span className="text-text-dim" aria-hidden>
+          <span className="text-muted/70" aria-hidden>
             ·
           </span>
-          <span className="text-zinc-400">
+          <span className="font-normal text-muted">
             <RelativeTime iso={lastSuccessAt} />
           </span>
         </>

@@ -27,12 +27,12 @@ export default function CricketCard({ cricket }: { cricket: CricketData }) {
           )}
 
           {/* Match title */}
-          <p className="text-xs text-text-dim leading-snug">{m.title}</p>
+          <p className="text-xs text-muted leading-snug">{m.title}</p>
 
           {/* Score grid */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <div className="text-[10px] uppercase tracking-wide text-text-dim truncate">
+              <div className="text-[10px] uppercase tracking-wide text-muted truncate">
                 {m.team_a}
               </div>
               <div className="tabular text-xl font-semibold leading-tight">
@@ -40,7 +40,7 @@ export default function CricketCard({ cricket }: { cricket: CricketData }) {
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-wide text-text-dim truncate">
+              <div className="text-[10px] uppercase tracking-wide text-muted truncate">
                 {m.team_b}
               </div>
               <div className="tabular text-xl font-semibold leading-tight">
@@ -50,10 +50,10 @@ export default function CricketCard({ cricket }: { cricket: CricketData }) {
           </div>
 
           {/* Status / result */}
-          <p className="text-xs text-zinc-400 leading-snug">{m.status}</p>
+          <p className="text-xs text-muted leading-snug">{m.status}</p>
 
           {m.starts_at && !m.is_live && (
-            <p className="text-[11px] text-text-dim">
+            <p className="text-[11px] text-muted">
               <RelativeTime iso={m.starts_at} />
             </p>
           )}
@@ -61,11 +61,11 @@ export default function CricketCard({ cricket }: { cricket: CricketData }) {
       ) : (
         <div className="flex gap-3 py-2">
           <Trophy
-            className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted"
             strokeWidth={1.75}
             aria-hidden
           />
-          <p className="text-sm text-text-dim leading-relaxed">{cricket.message}</p>
+          <p className="text-sm text-muted leading-relaxed">{cricket.message}</p>
         </div>
       )}
     </CardShell>

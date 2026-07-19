@@ -1,50 +1,45 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import RelativeTime from "@/components/RelativeTime";
 import type { SeismicWatchData } from "@/lib/seismic";
 
 export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
   const active = data.status === "watch" && data.alert;
-  const reduce = useReducedMotion();
 
   if (active && data.alert) {
     const e = data.alert;
     return (
-      <motion.article
-        initial={false}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="rounded-xl border border-amber-500/40 bg-amber-950/20 p-4 sm:p-5"
-        style={{ borderLeftWidth: "3px", borderLeftColor: "#fbbf24" }}
+      <article
+        className="mb-3 rounded-2xl border border-stale/40 bg-stale/5 p-4 sm:p-5"
+        style={{ borderLeftWidth: "3px", borderLeftColor: "var(--color-stale)" }}
         aria-live="assertive"
       >
         <header className="mb-2 flex items-center justify-between gap-2">
-          <h2 className="text-sm font-medium text-amber-100">Indian Ocean watch</h2>
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-200">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
+          <h2 className="text-sm font-semibold text-stale">Indian Ocean watch</h2>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-stale/10 px-2 py-0.5 text-xs font-medium text-stale">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-stale" />
             {e.tsunami ? "Tsunami flag" : "Seismic alert"}
           </span>
         </header>
 
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="tabular text-3xl font-semibold text-amber-50">
+          <span className="kpi-value text-3xl font-semibold text-ink">
             M{e.magnitude.toFixed(1)}
           </span>
-          <span className="min-w-0 text-sm text-zinc-200">{e.place}</span>
+          <span className="min-w-0 text-sm text-ink-soft">{e.place}</span>
         </div>
 
-        <p className="mt-2 text-xs leading-relaxed text-amber-100/80">
-          {e.distance_km.toLocaleString()} km from Colombo · {e.depth_km.toFixed(0)} km deep ·{" "}
-          <RelativeTime iso={e.observed_at} />
+        <p className="mt-2 text-xs leading-relaxed text-muted">
+          {e.distance_km.toLocaleString()} km from Colombo · {e.depth_km.toFixed(0)} km
+          deep · <RelativeTime iso={e.observed_at} />
           {e.tsunami
             ? " · USGS tsunami property set — follow Dept. of Meteorology coastal advice."
             : " · Large nearby quake — not an official warning."}
         </p>
 
-        <footer className="mt-2 text-xs text-text-dim">
+        <footer className="mt-2 text-xs text-muted">
           <a
-            className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+            className="link-quiet"
             href={e.url}
             rel="noopener noreferrer"
             target="_blank"
@@ -54,30 +49,27 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
           {" · checked "}
           <RelativeTime iso={data.checked_at} />
         </footer>
-      </motion.article>
+      </article>
     );
   }
 
   return (
-    <motion.article
-      initial={false}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className="flex items-center gap-2 rounded-lg border border-panel-edge/40 bg-panel/25 px-3 py-2.5 sm:gap-3 sm:px-4"
+    <article
+      className="mb-3 flex items-center gap-2 rounded-2xl border border-panel-edge bg-panel/90 px-3.5 py-2.5 sm:gap-3 sm:px-4"
       aria-label="Indian Ocean earthquake watch — quiet"
     >
-      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-600" aria-hidden />
-      <h2 className="shrink-0 text-xs font-medium text-zinc-500 sm:text-sm">
+      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fresh" aria-hidden />
+      <h2 className="shrink-0 text-xs font-semibold text-ink-soft sm:text-sm">
         Indian Ocean watch
       </h2>
-      <span className="min-w-0 truncate text-xs text-text-dim">
+      <span className="min-w-0 truncate text-xs text-muted">
         {data.status === "error"
           ? "USGS unreachable — retrying"
           : "Quiet · no Sri Lanka reach in 72 h"}
       </span>
-      <span className="tabular ml-auto shrink-0 text-[11px] text-text-dim sm:text-xs">
+      <span className="tabular ml-auto shrink-0 text-[11px] text-muted sm:text-xs">
         USGS · <RelativeTime iso={data.checked_at} />
       </span>
-    </motion.article>
+    </article>
   );
 }

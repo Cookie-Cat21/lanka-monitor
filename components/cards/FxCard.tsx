@@ -41,29 +41,29 @@ export default function FxCard({
         <>
           <div className="flex items-end gap-5">
             <div>
-              <div className="text-xs uppercase tracking-wide text-text-dim">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
                 Selling
               </div>
-              <div className="tabular text-3xl font-semibold">
+              <div className="kpi-value text-4xl font-semibold text-ink">
                 <CountUp value={fx.latest.sell} />
               </div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-wide text-text-dim">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
                 Buying
               </div>
-              <div className="tabular text-xl text-zinc-300">
+              <div className="tabular text-xl font-semibold text-ink-soft">
                 {fx.latest.buy.toFixed(2)}
               </div>
             </div>
             {delta !== null && (
               <div
-                className={`tabular mb-1 ml-auto text-sm ${
+                className={`tabular mb-1 ml-auto text-sm font-semibold ${
                   delta > 0
                     ? "text-down"
                     : delta < 0
                       ? "text-fresh"
-                      : "text-text-dim"
+                      : "text-muted"
                 }`}
                 title="Change vs previous day (selling rate). Up = weaker rupee."
               >
@@ -74,14 +74,14 @@ export default function FxCard({
           </div>
 
           <div className="mt-4">
-            <Sparkline values={sellSeries} />
+            <Sparkline values={sellSeries} stroke="#0e7490" />
           </div>
         </>
       ) : (
-        <div className="py-6 text-sm text-text-dim">
+        <div className="py-6 text-sm text-muted">
           No exchange-rate data available. The source is{" "}
-          <span className="text-down">{status}</span> — this card refuses to
-          guess.
+          <span className="font-semibold text-down">{status}</span> — this card
+          refuses to guess.
         </div>
       )}
     </CardShell>

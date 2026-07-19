@@ -13,7 +13,7 @@ import {
 function deltaClass(d: number): string {
   if (d > 0) return "text-down";
   if (d < 0) return "text-fresh";
-  return "text-text-dim";
+  return "text-muted";
 }
 
 export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
@@ -42,19 +42,19 @@ export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
       initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="rounded-xl border border-panel-edge bg-panel p-4 sm:col-span-2 sm:p-5 lg:col-span-3"
+      className="rounded-2xl border border-panel-edge bg-panel p-4 sm:col-span-2 sm:p-5 lg:col-span-3"
     >
       <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <div>
-          <h2 className="text-sm font-medium text-zinc-300">Daily cost pressure</h2>
-          <p className="text-xs text-text-dim">SLCESI — food, fuel, gas &amp; inflation</p>
+          <h2 className="text-sm font-medium text-ink-soft">Daily cost pressure</h2>
+          <p className="text-xs text-muted">SLCESI — food, fuel, gas &amp; inflation</p>
         </div>
         <div className="flex items-center gap-3">
           <FreshnessBadge status={status} lastSuccessAt={data.asOf} />
           <button
             type="button"
             onClick={share}
-            className="rounded-md border border-panel-edge px-2 py-0.5 text-xs text-zinc-300 hover:bg-panel-edge/60"
+            className="rounded-md border border-panel-edge px-2 py-0.5 text-xs text-ink-soft hover:bg-panel-edge/60"
           >
             {copied ? "Copied" : "Share"}
           </button>
@@ -66,7 +66,7 @@ export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
           <div className="tabular text-4xl font-semibold tracking-tight sm:text-5xl">
             {data.value.toFixed(1)}
           </div>
-          <div className="mt-1 text-xs text-text-dim">{data.referenceLabel}</div>
+          <div className="mt-1 text-xs text-muted">{data.referenceLabel}</div>
         </div>
         <div className={`tabular text-sm ${deltaClass(data.delta)}`}>
           {data.delta > 0 ? "+" : ""}
@@ -79,7 +79,7 @@ export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
       </div>
 
       <div className="mt-4">
-        <div className="mb-2 flex h-2 overflow-hidden rounded-full bg-ink">
+        <div className="mb-2 flex h-2 overflow-hidden rounded-full bg-depth">
           {data.components.map((c) => (
             <div
               key={c.id}
@@ -103,11 +103,11 @@ export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
           {data.components.map((c) => (
             <li
               key={c.id}
-              className="flex items-baseline justify-between gap-2 rounded-md bg-ink/40 px-2 py-1.5"
+              className="flex items-baseline justify-between gap-2 rounded-md bg-canvas px-2 py-1.5"
             >
-              <span className="text-zinc-300">
+              <span className="text-ink-soft">
                 {c.label}{" "}
-                <span className="text-text-dim">({Math.round(c.weight * 100)}%)</span>
+                <span className="text-muted">({Math.round(c.weight * 100)}%)</span>
               </span>
               <span className="tabular text-right">
                 {c.rawValue}
@@ -124,18 +124,18 @@ export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
       <button
         type="button"
         onClick={() => setShowMethod((v) => !v)}
-        className="mt-3 text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+        className="mt-3 text-xs text-muted underline decoration-panel-edge underline-offset-2 hover:text-ink-soft"
       >
         {showMethod ? "Hide methodology" : "How this number is built"}
       </button>
 
       {showMethod && (
-        <div className="mt-2 space-y-2 rounded-lg border border-panel-edge bg-ink/50 p-3 text-xs leading-relaxed text-text-dim">
+        <div className="mt-2 space-y-2 rounded-lg border border-panel-edge bg-canvas p-3 text-xs leading-relaxed text-muted">
           <p>{SLCESI_METHODOLOGY.formula}</p>
           <ul className="space-y-1">
             {SLCESI_METHODOLOGY.weights.map((w) => (
               <li key={w.id}>
-                <span className="text-zinc-400">{Math.round(w.weight * 100)}%</span> {w.label} —{" "}
+                <span className="text-muted">{Math.round(w.weight * 100)}%</span> {w.label} —{" "}
                 {w.source}
               </li>
             ))}
@@ -148,7 +148,7 @@ export default function CostOfLivingCard({ data }: { data: SlcesiData }) {
         </div>
       )}
 
-      <footer className="mt-3 text-xs text-text-dim">
+      <footer className="mt-3 text-xs text-muted">
         As of <time className="tabular">{data.asOf}</time> · CBSL · DCS · CEYPETCO · Litro
       </footer>
     </motion.article>

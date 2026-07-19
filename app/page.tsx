@@ -14,9 +14,9 @@ import PowerCard from "@/components/cards/PowerCard";
 import SeismicWatchCard from "@/components/cards/SeismicWatchCard";
 import WeatherCard from "@/components/cards/WeatherCard";
 import AlertBanner from "@/components/AlertBanner";
-import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 import HolidayGlance from "@/components/HolidayGlance";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import SectionLabel from "@/components/SectionLabel";
+import SiteHeader from "@/components/SiteHeader";
 import SituationMapLoader from "@/components/maps/SituationMapLoader";
 import { getAqiData } from "@/lib/aqi";
 import { getBriefData } from "@/lib/brief";
@@ -96,100 +96,49 @@ export default async function Dashboard() {
   ]);
 
   const coconut = getCoconutIndexData();
-
   const cbsl = statuses?.find((s) => s.id === "cbsl_fx") ?? null;
   const openaq = statuses?.find((s) => s.id === "openaq_colombo") ?? null;
-
   const telegramUrl = process.env.NEXT_PUBLIC_TELEGRAM_URL ?? null;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-10 pt-0 sm:px-6 sm:pb-12">
-      <AnalyticsBeacon path="/" />
-      {/* ── Sticky header ─────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-10 -mx-4 mb-4 border-b border-panel-edge/60 bg-ink/90 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:mb-6 sm:px-6 sm:py-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight">Lanka Monitor</h1>
-            <p className="mt-0.5 text-sm text-text-dim">
-              Sri Lanka, right now — money, weather, power, health, news.
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-3 pt-1">
-            {telegramUrl && (
-              <a
-                href={telegramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                aria-label="Lanka Monitor Telegram channel"
-              >
-                Telegram
-              </a>
-            )}
-            <a
-              href="/health"
-              className="text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              Source health
-            </a>
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </header>
+    <main className="mx-auto max-w-5xl px-4 pb-14 pt-5 sm:px-6 sm:pt-8">
+      <SiteHeader telegramUrl={telegramUrl} />
 
-      {/* ── Life-safety alert (hidden when quiet) ─────────────────────────── */}
       <AlertBanner seismic={seismic} />
-
       <HolidayGlance />
+      <SeismicWatchCard data={seismic} />
 
-      <div className="mb-4">
-        <SeismicWatchCard data={seismic} />
-      </div>
-
-      {/* ── Brief — full width ─────────────────────────────────────────────── */}
       {(brief.en || brief.si || brief.ta) && (
-        <div className="mb-4">
+        <div className="mb-5">
           <BriefCard brief={brief} />
         </div>
       )}
 
-      {/* ── Money cluster ─────────────────────────────────────────────────── */}
-      <section aria-label="Economic indicators">
-        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
-          Money
-        </p>
-        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+      <section aria-label="Economic indicators" className="mb-6">
+        <SectionLabel id="money">Money</SectionLabel>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
           <FxCard fx={fx} source={cbsl} />
           <CseCard cse={cse} source={cseSource} />
           <FuelCard fuel={fuel} source={fuelSource} />
         </div>
       </section>
 
-      {/* ── Operational cluster ───────────────────────────────────────────── */}
-      <section aria-label="Operational status">
-        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
-          Today
-        </p>
-        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+      <section aria-label="Operational status" className="mb-6">
+        <SectionLabel>Today</SectionLabel>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
           <WeatherCard weather={weather} source={weatherSource} />
           <PowerCard power={power} source={powerSource} />
           <CricketCard cricket={cricket} />
         </div>
       </section>
 
-      {/* ── Situation map (replaces port demo) ────────────────────────────── */}
-      <div className="mb-4">
-        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
-          Map · weather, outages, quakes
-        </p>
+      <section aria-label="Situation map" className="mb-6">
+        <SectionLabel>Map · weather, outages, quakes</SectionLabel>
         <SituationMapLoader seismic={seismic} />
-      </div>
+      </section>
 
-      {/* ── Depth cards ───────────────────────────────────────────────────── */}
-      <section aria-label="Depth data">
-        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
-          Depth
-        </p>
+      <section aria-label="Depth data" className="mb-2">
+        <SectionLabel>Depth</SectionLabel>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
           <NewsPulseCard news={news} />
           <DengueCard dengue={dengue} />
@@ -201,52 +150,40 @@ export default async function Dashboard() {
         </div>
       </section>
 
-      {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer
-        className="mt-10 border-t border-panel-edge pt-4 text-xs text-text-dim"
+        className="mt-12 border-t border-panel-edge pt-5 text-xs text-muted"
         aria-label="Site footer"
       >
-        <p>Data from public Sri Lankan institutions; credited per card.</p>
+        <p className="font-medium text-ink-soft">
+          Data from public Sri Lankan institutions; credited per card.
+        </p>
         <nav
-          className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1"
+          className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1"
           aria-label="Site links"
         >
-          <a
-            className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            href="https://github.com/Cookie-Cat21/lanka-monitor"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-          <span aria-hidden>·</span>
-          <a
-            className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            href="/docs"
-          >
-            API docs
-          </a>
-          <span aria-hidden>·</span>
-          <a
-            className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            href="/health"
-          >
-            Source health
-          </a>
-          <span aria-hidden>·</span>
-          <a
-            className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            href="https://github.com/Cookie-Cat21/lanka-monitor/blob/main/LICENSE"
-            rel="noopener noreferrer"
-          >
-            MIT License
-          </a>
-          <span aria-hidden>·</span>
-          <a
-            className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            href="/llms.txt"
-          >
-            llms.txt
-          </a>
+          {[
+            ["GitHub", "https://github.com/Cookie-Cat21/lanka-monitor"],
+            ["API docs", "/docs"],
+            ["Source health", "/health"],
+            [
+              "MIT License",
+              "https://github.com/Cookie-Cat21/lanka-monitor/blob/main/LICENSE",
+            ],
+            ["llms.txt", "/llms.txt"],
+          ].map(([label, href], i, arr) => (
+            <span key={href} className="inline-flex items-center gap-x-3">
+              <a
+                className="link-quiet"
+                href={href}
+                {...(href.startsWith("http")
+                  ? { rel: "noopener noreferrer" }
+                  : {})}
+              >
+                {label}
+              </a>
+              {i < arr.length - 1 ? <span aria-hidden>·</span> : null}
+            </span>
+          ))}
         </nav>
       </footer>
     </main>

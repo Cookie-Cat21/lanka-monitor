@@ -21,7 +21,7 @@ export default function AqiCard({
       initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
-      className="rounded-xl border border-panel-edge bg-panel p-4 sm:p-5"
+      className="rounded-2xl border border-panel-edge bg-panel p-4 sm:p-5"
       style={
         scale
           ? {
@@ -33,7 +33,7 @@ export default function AqiCard({
       }
     >
       <header className="mb-3 flex items-baseline justify-between gap-2">
-        <h2 className="text-sm font-medium text-zinc-300">Colombo air</h2>
+        <h2 className="text-sm font-medium text-ink-soft">Colombo air</h2>
         <FreshnessBadge
           status={status}
           lastSuccessAt={source?.last_success_at ?? null}
@@ -55,23 +55,23 @@ export default function AqiCard({
               {scale.label}
             </span>
             <div className="mb-1 ml-auto text-right">
-              <div className="text-xs uppercase tracking-wide text-text-dim">
+              <div className="text-xs uppercase tracking-wide text-muted">
                 PM2.5
               </div>
-              <div className="tabular text-sm text-zinc-300">
+              <div className="tabular text-sm text-ink-soft">
                 {reading.pm25.toFixed(1)}{" "}
-                <span className="text-text-dim">µg/m³</span>
+                <span className="text-muted">µg/m³</span>
               </div>
             </div>
           </div>
 
-          <p className="mt-3 text-xs leading-relaxed text-text-dim">
+          <p className="mt-3 text-xs leading-relaxed text-muted">
             Haze season (Dec–Feb) lifts fine particles across the western
             province. Every reading shows its category label beside colour — never
             colour alone. Check before long outdoor exertion.
           </p>
 
-          <footer className="mt-2 text-xs text-text-dim">
+          <footer className="mt-2 text-xs text-muted">
             {aqi.location ? (
               <>
                 <span>{aqi.location}</span>
@@ -81,7 +81,7 @@ export default function AqiCard({
             <time className="tabular">{reading.observed_at.slice(0, 16).replace("T", " ")} UTC</time>
             {" · "}
             <a
-              className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+              className="underline decoration-panel-edge underline-offset-2 hover:text-ink-soft"
               href="https://openaq.org/"
               rel="noopener noreferrer"
               target="_blank"
@@ -92,11 +92,11 @@ export default function AqiCard({
           </footer>
         </>
       ) : (
-        <div className="py-4 text-sm text-text-dim">
+        <div className="py-4 text-sm text-muted">
           No air-quality data yet. OpenAQ source is{" "}
           <span className="text-down">{status}</span> — set{" "}
-          <code className="text-zinc-400">OPENAQ_API_KEY</code> and activate{" "}
-          <code className="text-zinc-400">openaq_colombo</code> in the database.
+          <code className="text-muted">OPENAQ_API_KEY</code> and activate{" "}
+          <code className="text-muted">openaq_colombo</code> in the database.
         </div>
       )}
     </motion.article>

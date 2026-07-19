@@ -23,10 +23,10 @@ export default function CoconutIndexPage() {
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-10 sm:px-6">
       <CoconutIndexCard data={data} standalone />
 
-      <p className="mt-6 text-center text-xs text-text-dim">
+      <p className="mt-6 text-center text-xs text-muted">
         <Link
           href="/"
-          className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+          className="underline decoration-panel-edge underline-offset-2 hover:text-ink-soft"
         >
           Back to Lanka Monitor
         </Link>

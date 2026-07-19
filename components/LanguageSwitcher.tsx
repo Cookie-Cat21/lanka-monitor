@@ -18,11 +18,6 @@ function getStoredLocale(): LocaleCode {
   return (LOCALES.find((l) => l.code === v)?.code ?? "en") as LocaleCode;
 }
 
-/**
- * Compact EN/සිං/தமி switcher.
- * Persists choice to localStorage and updates the <html lang> attribute so
- * Noto Sans Sinhala / Tamil fonts activate via the font variables set in layout.
- */
 export default function LanguageSwitcher() {
   const [locale, setLocale] = useState<LocaleCode>("en");
 
@@ -33,24 +28,25 @@ export default function LanguageSwitcher() {
   function choose(code: LocaleCode) {
     setLocale(code);
     localStorage.setItem(STORAGE_KEY, code);
-    document.documentElement.lang = code === "si" ? "si" : code === "ta" ? "ta" : "en";
+    document.documentElement.lang =
+      code === "si" ? "si" : code === "ta" ? "ta" : "en";
   }
 
   return (
     <div
       role="group"
       aria-label="Interface language"
-      className="flex items-center gap-0.5 rounded-lg border border-panel-edge bg-ink/60 p-0.5"
+      className="flex items-center gap-0.5 rounded-full border border-panel-edge bg-canvas/80 p-0.5"
     >
       {LOCALES.map(({ code, label }) => (
         <button
           key={code}
           onClick={() => choose(code)}
           aria-pressed={locale === code}
-          className={`rounded px-2 py-1 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 ${
+          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 ${
             locale === code
-              ? "bg-panel text-zinc-100"
-              : "text-text-dim hover:text-zinc-300"
+              ? "bg-lagoon text-white shadow-sm"
+              : "text-muted hover:text-ink"
           }`}
         >
           {label}

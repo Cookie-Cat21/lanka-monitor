@@ -1,9 +1,21 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, Noto_Sans_Sinhala, Noto_Sans_Tamil } from "next/font/google";
+import {
+  Fraunces,
+  Noto_Sans_Sinhala,
+  Noto_Sans_Tamil,
+  Source_Sans_3,
+} from "next/font/google";
 import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 import "./globals.css";
 
-const body = IBM_Plex_Sans({
+const display = Fraunces({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Source_Sans_3({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-body",
@@ -24,8 +36,11 @@ const tamil = Noto_Sans_Tamil({
   display: "swap",
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL
-  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://lanka-monitor.vercel.app");
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "https://lanka-monitor.vercel.app");
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -44,8 +59,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${body.variable} ${sinhala.variable} ${tamil.variable}`}>
-      <body className="min-h-screen bg-transparent text-zinc-100 antialiased">
+    <html
+      lang="en"
+      className={`${display.variable} ${body.variable} ${sinhala.variable} ${tamil.variable}`}
+    >
+      <body className="min-h-screen bg-transparent text-ink antialiased">
         <AnalyticsBeacon />
         {children}
       </body>

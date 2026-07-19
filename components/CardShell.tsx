@@ -5,6 +5,14 @@ import type { ReactNode } from "react";
 import FreshnessBadge from "@/components/FreshnessBadge";
 import type { FreshnessStatus, SourceStatus } from "@/lib/types";
 
+const STATUS_RAIL: Record<FreshnessStatus, string> = {
+  fresh: "bg-fresh",
+  stale: "bg-stale",
+  down: "bg-down",
+  inactive: "bg-panel-edge",
+};
+
+/** Tremor/HyperUI-inspired KPI panel — status rail + clear hierarchy. */
 export default function CardShell({
   title,
   subtitle,
@@ -31,33 +39,35 @@ export default function CardShell({
   const reduce = useReducedMotion();
   const resolvedStatus = status ?? source?.status ?? "down";
   const resolvedAt = lastSuccessAt ?? source?.last_success_at ?? null;
-  // Never start at opacity 0 — SSR / no-JS / slow hydrate must stay readable.
-  const motionProps = reduce
-    ? {}
-    : {
-        initial: { opacity: 1, y: 0 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.35, delay, ease: "easeOut" as const },
-      };
 
   return (
     <motion.article
-      {...motionProps}
-      className={`min-h-[160px] rounded-xl border border-panel-edge bg-panel p-4 sm:p-5 ${className}`}
+      initial={false}
+      whileHover={reduce ? undefined : { y: -2 }}
+      transition={{ duration: 0.2, delay }}
+      className={`group relative min-h-[160px] overflow-hidden rounded-2xl border border-panel-edge bg-panel p-4 shadow-[0_1px_0_rgba(12,31,36,0.04)] sm:p-5 ${className}`}
       style={style}
     >
-      <header className="mb-3 flex items-start justify-between gap-2">
+      <span
+        aria-hidden
+        className={`absolute inset-y-3 left-0 w-[3px] rounded-full ${STATUS_RAIL[resolvedStatus]}`}
+      />
+      <header className="mb-3 flex items-start justify-between gap-2 pl-2">
         <div className="min-w-0">
-          <h2 className="text-sm font-medium text-zinc-300">{title}</h2>
+          <h2 className="text-[13px] font-semibold tracking-tight text-ink-soft">
+            {title}
+          </h2>
           {subtitle ? (
-            <div className="mt-0.5 text-[11px] text-text-dim">{subtitle}</div>
+            <div className="mt-0.5 text-[11px] text-muted">{subtitle}</div>
           ) : null}
         </div>
         <FreshnessBadge status={resolvedStatus} lastSuccessAt={resolvedAt} />
       </header>
-      {children}
+      <div className="pl-2">{children}</div>
       {footer ? (
-        <footer className="mt-2 text-xs text-text-dim">{footer}</footer>
+        <footer className="mt-3 border-t border-panel-edge/70 pt-2 pl-2 text-[11px] leading-relaxed text-muted">
+          {footer}
+        </footer>
       ) : null}
     </motion.article>
   );

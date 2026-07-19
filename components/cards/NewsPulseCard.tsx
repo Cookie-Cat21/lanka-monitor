@@ -21,7 +21,7 @@ export default function NewsPulseCard({ news }: { news: NewsData }) {
           {displayArticles.map((article, i) => (
             <li key={article.id ?? i} className="flex items-start gap-2 min-w-0">
               <span
-                className="mt-1 h-1 w-1 shrink-0 rounded-full bg-zinc-600"
+                className="mt-1 h-1 w-1 shrink-0 rounded-full bg-muted"
                 aria-hidden
               />
               <div className="min-w-0">
@@ -30,7 +30,7 @@ export default function NewsPulseCard({ news }: { news: NewsData }) {
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-start gap-1 text-sm leading-snug text-zinc-300 hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1"
+                    className="group flex items-start gap-1 text-sm leading-snug text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1"
                   >
                     <span className="min-w-0 line-clamp-2">{article.title}</span>
                     <ExternalLink
@@ -39,11 +39,11 @@ export default function NewsPulseCard({ news }: { news: NewsData }) {
                     />
                   </a>
                 ) : (
-                  <p className="text-sm leading-snug text-zinc-300 line-clamp-2">
+                  <p className="text-sm leading-snug text-ink-soft line-clamp-2">
                     {article.title}
                   </p>
                 )}
-                <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-text-dim">
+                <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted">
                   {article.source && (
                     <>
                       <span>{article.source}</span>
@@ -61,11 +61,11 @@ export default function NewsPulseCard({ news }: { news: NewsData }) {
       ) : (
         <div className="flex gap-3 py-4">
           <Newspaper
-            className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted"
             strokeWidth={1.75}
             aria-hidden
           />
-          <p className="text-sm text-text-dim">
+          <p className="text-sm text-muted">
             No articles ingested yet. The news feed is not yet configured — this
             card refuses to guess.
           </p>

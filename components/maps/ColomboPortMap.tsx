@@ -147,24 +147,24 @@ export default function ColomboPortMap() {
 
   return (
     <section
-      className="relative overflow-hidden rounded-xl border border-panel-edge bg-panel"
+      className="relative overflow-hidden rounded-2xl border border-panel-edge bg-panel"
       aria-label="Colombo port vessel traffic"
     >
       <div ref={containerRef} className="h-[min(42vh,320px)] w-full sm:h-[min(38vh,360px)]" />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3 sm:p-4">
         <div>
-          <h2 className="text-sm font-medium text-zinc-200">Colombo port</h2>
-          <p className="text-xs text-text-dim">AIS vessel density · demo data</p>
+          <h2 className="text-sm font-medium text-ink">Colombo port</h2>
+          <p className="text-xs text-muted">AIS vessel density · demo data</p>
         </div>
 
         <div
-          className={`tabular rounded-lg border border-panel-edge bg-ink/80 px-2.5 py-1.5 text-right backdrop-blur-sm ${
+          className={`tabular rounded-lg border border-panel-edge bg-panel/90 px-2.5 py-1.5 text-right backdrop-blur-sm ${
             quiet && !reducedMotion() ? "animate-[pulse_4s_ease-in-out_infinite]" : ""
           }`}
         >
-          <div className="text-lg font-semibold leading-none text-zinc-100">{count}</div>
-          <div className="mt-0.5 text-[10px] uppercase tracking-wide text-text-dim">
+          <div className="text-lg font-semibold leading-none text-ink">{count}</div>
+          <div className="mt-0.5 text-[10px] uppercase tracking-wide text-muted">
             {quiet ? "quiet" : "active"}
           </div>
         </div>

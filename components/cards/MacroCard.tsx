@@ -11,7 +11,7 @@ import {
 const DELTA_CLASS: Record<MacroDeltaTone, string> = {
   positive: "text-fresh",
   negative: "text-down",
-  neutral: "text-text-dim",
+  neutral: "text-muted",
 };
 
 function MetricCell({
@@ -28,10 +28,10 @@ function MetricCell({
   deltaTone: MacroDeltaTone;
 }) {
   return (
-    <div className="rounded-md bg-ink/40 px-2.5 py-2">
+    <div className="rounded-md bg-canvas px-2.5 py-2">
       <div className="flex items-baseline justify-between gap-1">
-        <span className="text-[11px] text-zinc-300">{label}</span>
-        <span className="text-[10px] uppercase tracking-wide text-text-dim">
+        <span className="text-[11px] text-ink-soft">{label}</span>
+        <span className="text-[10px] uppercase tracking-wide text-muted">
           {source}
         </span>
       </div>
@@ -55,12 +55,12 @@ export default function MacroCard({ data }: { data: MacroData }) {
       initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="rounded-xl border border-panel-edge bg-panel p-4 sm:col-span-2 sm:p-5 lg:col-span-2"
+      className="rounded-2xl border border-panel-edge bg-panel p-4 sm:col-span-2 sm:p-5 lg:col-span-2"
     >
       <header className="mb-3 flex items-baseline justify-between gap-2">
         <div>
-          <h2 className="text-sm font-medium text-zinc-300">Monthly macro</h2>
-          <p className="text-[11px] text-text-dim">
+          <h2 className="text-sm font-medium text-ink-soft">Monthly macro</h2>
+          <p className="text-[11px] text-muted">
             Official releases · monthly cadence
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function MacroCard({ data }: { data: MacroData }) {
         ))}
       </div>
 
-      <footer className="mt-3 text-[11px] text-text-dim">
+      <footer className="mt-3 text-[11px] text-muted">
         As of <time className="tabular">{formatMacroMonth(data.asOf)}</time> · CBSL
         · DCS · SLTDA
         {data.incomplete &&

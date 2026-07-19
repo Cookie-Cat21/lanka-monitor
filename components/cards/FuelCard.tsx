@@ -31,14 +31,14 @@ function PriceBlock({
 }) {
   const tone =
     d === null || d === 0
-      ? "text-text-dim"
+      ? "text-muted"
       : d > 0
         ? "text-down"
         : "text-fresh";
 
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-[10px] uppercase tracking-wide text-text-dim">{label}</span>
+      <span className="text-[10px] uppercase tracking-wide text-muted">{label}</span>
       {price !== null ? (
         <div className="flex items-baseline gap-1.5">
           <span className="tabular text-lg font-semibold leading-tight">
@@ -52,7 +52,7 @@ function PriceBlock({
           )}
         </div>
       ) : (
-        <span className="tabular text-sm text-text-dim">—</span>
+        <span className="tabular text-sm text-muted">—</span>
       )}
     </div>
   );
@@ -96,7 +96,7 @@ export default function FuelCard({
           ))}
         </div>
       ) : (
-        <div className="py-6 text-sm text-text-dim">
+        <div className="py-6 text-sm text-muted">
           No fuel price data. Source is{" "}
           <span className="text-down">{status}</span> — this card refuses to
           guess.

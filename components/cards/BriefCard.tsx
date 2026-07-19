@@ -54,7 +54,7 @@ export default function BriefCard({ brief }: { brief: BriefData }) {
         <div
           role="group"
           aria-label="Brief language"
-          className="mb-3 flex items-center gap-0.5 self-start rounded-lg border border-panel-edge bg-ink/50 p-0.5"
+          className="mb-3 flex items-center gap-0.5 self-start rounded-lg border border-panel-edge bg-canvas p-0.5"
         >
           {available.map((loc) => (
             <button
@@ -63,8 +63,8 @@ export default function BriefCard({ brief }: { brief: BriefData }) {
               aria-pressed={locale === loc}
               className={`rounded px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 ${
                 locale === loc
-                  ? "bg-panel text-zinc-100"
-                  : "text-text-dim hover:text-zinc-300"
+                  ? "bg-panel text-ink"
+                  : "text-muted hover:text-ink-soft"
               }`}
             >
               {LOCALE_LABELS[loc]}
@@ -78,7 +78,7 @@ export default function BriefCard({ brief }: { brief: BriefData }) {
         <>
           <div
             lang={locale === "si" ? "si" : locale === "ta" ? "ta" : "en"}
-            className={`whitespace-pre-wrap text-sm leading-relaxed text-zinc-200 ${LOCALE_FONT[locale]}`}
+            className={`whitespace-pre-wrap text-sm leading-relaxed text-ink ${LOCALE_FONT[locale]}`}
           >
             {content}
           </div>
@@ -86,18 +86,18 @@ export default function BriefCard({ brief }: { brief: BriefData }) {
           {/* Citations */}
           {brief.citations.length > 0 && (
             <div className="mt-4 border-t border-panel-edge pt-3">
-              <h3 className="mb-1.5 text-[10px] uppercase tracking-wide text-text-dim">
+              <h3 className="mb-1.5 text-[10px] uppercase tracking-wide text-muted">
                 Sources
               </h3>
               <ul className="flex flex-wrap gap-x-3 gap-y-1">
                 {brief.citations.map((cite) => (
-                  <li key={cite.n} className="text-xs text-zinc-400">
+                  <li key={cite.n} className="text-xs text-muted">
                     {cite.url ? (
                       <a
                         href={cite.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0.5 underline decoration-panel-edge underline-offset-2 hover:text-zinc-200"
+                        className="inline-flex items-center gap-0.5 underline decoration-panel-edge underline-offset-2 hover:text-ink"
                       >
                         [{cite.n}]&nbsp;{cite.title}
                         <ExternalLink className="h-2.5 w-2.5" aria-hidden />
@@ -114,7 +114,7 @@ export default function BriefCard({ brief }: { brief: BriefData }) {
           )}
         </>
       ) : (
-        <div className="py-6 text-sm text-text-dim">
+        <div className="py-6 text-sm text-muted">
           No brief available yet — the brief generation pipeline has not run.
           This card refuses to guess.
         </div>

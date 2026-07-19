@@ -7,7 +7,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import type { SeismicWatchData } from "@/lib/types";
 
 const MAP_STYLE =
-  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+  "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
 /** Sri Lanka centre + default zoom */
 const SL_CENTER: [number, number] = [80.77, 7.87];
@@ -189,7 +189,7 @@ export default function SituationMap({ seismic, weatherPoints = [], powerOutages
 
   return (
     <section
-      className="relative overflow-hidden rounded-xl border border-panel-edge bg-panel"
+      className="relative overflow-hidden rounded-2xl border border-panel-edge bg-panel"
       aria-label="Sri Lanka situation map"
     >
       <div
@@ -200,8 +200,8 @@ export default function SituationMap({ seismic, weatherPoints = [], powerOutages
       {/* Top-left label */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3 sm:p-4">
         <div>
-          <h2 className="text-sm font-medium text-zinc-200">Situation map</h2>
-          <p className="text-xs text-text-dim">Sri Lanka · live layers</p>
+          <h2 className="text-sm font-medium text-ink">Situation map</h2>
+          <p className="text-xs text-muted">Sri Lanka · live layers</p>
         </div>
       </div>
 
@@ -210,20 +210,20 @@ export default function SituationMap({ seismic, weatherPoints = [], powerOutages
         onClick={() => setPanelOpen((p) => !p)}
         aria-label="Toggle map layers"
         aria-expanded={panelOpen}
-        className="absolute bottom-10 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-panel-edge bg-panel shadow-lg hover:bg-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:bottom-10 sm:right-4"
+        className="absolute bottom-10 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-panel-edge bg-panel shadow-lg hover:bg-lagoon-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:bottom-10 sm:right-4"
       >
-        <Layers className="h-4 w-4 text-zinc-300" />
+        <Layers className="h-4 w-4 text-ink-soft" />
       </button>
 
       {/* Layer bottom sheet */}
       {panelOpen && (
         <div className="absolute bottom-0 left-0 right-0 z-20 rounded-t-2xl border-t border-panel-edge bg-panel/95 p-4 backdrop-blur-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-sm font-medium text-zinc-300">Map layers</h3>
+            <h3 className="text-sm font-medium text-ink-soft">Map layers</h3>
             <button
               onClick={() => setPanelOpen(false)}
               aria-label="Close layers panel"
-              className="rounded p-0.5 text-text-dim hover:text-zinc-300 focus-visible:outline focus-visible:outline-2"
+              className="rounded p-0.5 text-muted hover:text-ink-soft focus-visible:outline focus-visible:outline-2"
             >
               <X className="h-4 w-4" />
             </button>
@@ -244,7 +244,7 @@ export default function SituationMap({ seismic, weatherPoints = [], powerOutages
                   />
                   <label
                     htmlFor={`layer-${id}`}
-                    className="cursor-pointer text-sm text-zinc-300"
+                    className="cursor-pointer text-sm text-ink-soft"
                   >
                     {LAYER_LABELS[id]}
                   </label>

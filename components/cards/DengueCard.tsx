@@ -7,7 +7,7 @@ import type { DengueData } from "@/lib/types";
 function DeltaBadge({ delta }: { delta: number | null }) {
   if (delta === null) return null;
   const tone =
-    delta > 0 ? "text-down" : delta < 0 ? "text-fresh" : "text-text-dim";
+    delta > 0 ? "text-down" : delta < 0 ? "text-fresh" : "text-muted";
   const label = delta > 0 ? `+${delta.toLocaleString()}` : delta.toLocaleString();
   return (
     <span
@@ -48,7 +48,7 @@ export default function DengueCard({ dengue }: { dengue: DengueData }) {
         <div className="space-y-4">
           {/* National figure */}
           <div>
-            <div className="text-[10px] uppercase tracking-wide text-text-dim">
+            <div className="text-[10px] uppercase tracking-wide text-muted">
               National (week)
             </div>
             <div className="mt-0.5 flex items-baseline gap-2">
@@ -62,13 +62,13 @@ export default function DengueCard({ dengue }: { dengue: DengueData }) {
           {/* District bar list */}
           {hasDistricts && (
             <div>
-              <div className="mb-1.5 text-[10px] uppercase tracking-wide text-text-dim">
+              <div className="mb-1.5 text-[10px] uppercase tracking-wide text-muted">
                 Top districts
               </div>
               <ul className="space-y-1.5" aria-label="Dengue cases by district">
                 {top.map((d) => (
                   <li key={d.name} className="flex items-center gap-2">
-                    <span className="w-20 shrink-0 truncate text-xs capitalize text-zinc-400">
+                    <span className="w-20 shrink-0 truncate text-xs capitalize text-muted">
                       {d.name}
                     </span>
                     <div className="flex-1 overflow-hidden rounded-full bg-panel-edge">
@@ -78,7 +78,7 @@ export default function DengueCard({ dengue }: { dengue: DengueData }) {
                         aria-hidden
                       />
                     </div>
-                    <span className="tabular w-10 shrink-0 text-right text-xs text-zinc-400">
+                    <span className="tabular w-10 shrink-0 text-right text-xs text-muted">
                       {d.cases.toLocaleString()}
                     </span>
                   </li>
@@ -90,11 +90,11 @@ export default function DengueCard({ dengue }: { dengue: DengueData }) {
       ) : (
         <div className="flex gap-3 py-4">
           <Activity
-            className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted"
             strokeWidth={1.75}
             aria-hidden
           />
-          <p className="text-sm text-text-dim">
+          <p className="text-sm text-muted">
             No dengue data available. The Epidemiology Unit source is not yet
             active — this card refuses to guess.
           </p>

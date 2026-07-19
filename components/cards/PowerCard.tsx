@@ -53,7 +53,7 @@ export default function PowerCard({
                   <span className="tabular text-xl font-semibold leading-none">
                     {power.active_outages ?? 0}
                   </span>
-                  <span className="ml-1 text-xs text-text-dim">
+                  <span className="ml-1 text-xs text-muted">
                     active outage{power.active_outages !== 1 ? "s" : ""}
                   </span>
                 </>
@@ -64,11 +64,11 @@ export default function PowerCard({
           {/* 14-day tracker strip */}
           {power.series.length > 0 && (
             <div>
-              <div className="mb-1 text-[10px] uppercase tracking-wide text-text-dim">
+              <div className="mb-1 text-[10px] uppercase tracking-wide text-muted">
                 14-day history
               </div>
               <Tracker series={power.series} days={14} />
-              <div className="mt-1 flex justify-between text-[10px] text-text-dim">
+              <div className="mt-1 flex justify-between text-[10px] text-muted">
                 <span>14 days ago</span>
                 <span>Today</span>
               </div>
@@ -76,7 +76,7 @@ export default function PowerCard({
           )}
         </div>
       ) : (
-        <div className="py-6 text-sm text-text-dim">
+        <div className="py-6 text-sm text-muted">
           No outage data. Source is{" "}
           <span className="text-down">{status}</span> — this card refuses to
           guess.

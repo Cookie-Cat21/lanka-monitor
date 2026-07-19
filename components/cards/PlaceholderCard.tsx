@@ -43,12 +43,12 @@ export default function PlaceholderCard({
       <div className="flex gap-3">
         {Icon ? (
           <Icon
-            className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted"
             strokeWidth={1.75}
             aria-hidden
           />
         ) : null}
-        <p className="text-xs leading-relaxed text-text-dim">{detail}</p>
+        <p className="text-xs leading-relaxed text-muted">{detail}</p>
       </div>
     </CardShell>
   );

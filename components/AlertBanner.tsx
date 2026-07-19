@@ -40,7 +40,7 @@ export default function AlertBanner({ seismic, alerts = [] }: AlertBannerProps) 
     <div
       role="alert"
       aria-live="assertive"
-      className="mb-4 flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-950/30 px-4 py-3"
+      className="mb-4 flex items-start gap-3 rounded-xl border border-stale/40 bg-stale/10 px-4 py-3"
     >
       <TriangleAlert
         className="mt-0.5 h-4 w-4 shrink-0 text-amber-400"
@@ -48,7 +48,7 @@ export default function AlertBanner({ seismic, alerts = [] }: AlertBannerProps) 
       />
       <div className="min-w-0 flex-1 text-sm">
         {showSeismic && seismic?.alert && (
-          <p className="text-amber-100">
+          <p className="text-ink-soft">
             <span className="font-semibold">Indian Ocean Watch</span> — M
             {seismic.alert.magnitude.toFixed(1)} at {seismic.alert.place},{" "}
             {seismic.alert.distance_km.toLocaleString()} km from Colombo.
@@ -67,7 +67,7 @@ export default function AlertBanner({ seismic, alerts = [] }: AlertBannerProps) 
           </p>
         )}
         {extraHigh.map((a, i) => (
-          <p key={i} className="text-amber-100">
+          <p key={i} className="text-ink-soft">
             {a.message}
             {a.url && (
               <>
@@ -88,7 +88,7 @@ export default function AlertBanner({ seismic, alerts = [] }: AlertBannerProps) 
       <button
         onClick={() => setDismissed(true)}
         aria-label="Dismiss alert"
-        className="shrink-0 rounded p-0.5 text-amber-300/70 hover:text-amber-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-400"
+        className="shrink-0 rounded p-0.5 text-amber-300/70 hover:text-ink-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-stale"
       >
         <X className="h-4 w-4" />
       </button>

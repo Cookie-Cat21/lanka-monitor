@@ -19,7 +19,7 @@ function Summary({ sources }: { sources: SourceStatus[] }) {
       <span className="text-fresh">● {counts.fresh} fresh</span>
       <span className="text-stale">● {counts.stale} stale</span>
       <span className="text-down">● {counts.down} down</span>
-      <span className="text-zinc-500">○ {counts.inactive} soon</span>
+      <span className="text-muted">○ {counts.inactive} soon</span>
     </div>
   );
 }
@@ -29,27 +29,27 @@ function SourceRow({ s }: { s: SourceStatus }) {
     <>
       {/* Desktop */}
       <tr className="hidden border-t border-panel-edge sm:table-row">
-        <td className="py-3 pr-4 font-medium text-zinc-200">{s.name}</td>
-        <td className="py-3 pr-4 capitalize text-text-dim">{s.category}</td>
+        <td className="py-3 pr-4 font-medium text-ink">{s.name}</td>
+        <td className="py-3 pr-4 capitalize text-muted">{s.category}</td>
         <td className="py-3 pr-4">
           <FreshnessBadge status={s.status} lastSuccessAt={s.last_success_at} />
         </td>
-        <td className="tabular py-3 text-text-dim">
+        <td className="tabular py-3 text-muted">
           {cadenceLabel(s.expected_cadence_minutes)}
         </td>
       </tr>
       {/* Mobile */}
       <tr className="sm:hidden">
         <td colSpan={4} className="py-2">
-          <article className="rounded-xl border border-panel-edge bg-panel p-3">
+          <article className="rounded-2xl border border-panel-edge bg-panel p-3">
             <div className="mb-1 flex items-start justify-between gap-2">
-              <h2 className="text-sm font-medium text-zinc-200">{s.name}</h2>
+              <h2 className="text-sm font-medium text-ink">{s.name}</h2>
               <FreshnessBadge
                 status={s.status}
                 lastSuccessAt={s.last_success_at}
               />
             </div>
-            <p className="text-xs text-text-dim">
+            <p className="text-xs text-muted">
               <span className="capitalize">{s.category}</span>
               {" · "}
               {cadenceLabel(s.expected_cadence_minutes)}
@@ -74,21 +74,21 @@ export default async function HealthPage() {
       <header className="mb-6">
         <Link
           href="/"
-          className="text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="text-xs text-muted underline decoration-panel-edge underline-offset-2 hover:text-ink-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           ← Dashboard
         </Link>
         <h1 className="mt-3 text-lg font-semibold tracking-tight">
           Source health
         </h1>
-        <p className="mt-1 text-sm text-text-dim">
+        <p className="mt-1 text-sm text-muted">
           Pipeline transparency — what we trust today. Cards hide data when a
           source is down; they refuse to guess.
         </p>
       </header>
 
       {!sources ? (
-        <div className="rounded-xl border border-panel-edge bg-panel p-5 text-sm text-text-dim">
+        <div className="rounded-2xl border border-panel-edge bg-panel p-5 text-sm text-muted">
           Database not configured — health view unavailable. Set Supabase env
           vars, then re-check. Raw JSON:{" "}
           <Link href="/api/v1/health" className="underline">
@@ -96,13 +96,13 @@ export default async function HealthPage() {
           </Link>
         </div>
       ) : sources.length === 0 ? (
-        <p className="text-sm text-text-dim">No sources configured.</p>
+        <p className="text-sm text-muted">No sources configured.</p>
       ) : (
         <>
           <Summary sources={sources} />
-          <div className="overflow-x-auto rounded-xl border border-panel-edge bg-panel/40 p-2 sm:p-4">
+          <div className="overflow-x-auto rounded-2xl border border-panel-edge bg-panel/40 p-2 sm:p-4">
             <table className="w-full text-left text-sm">
-              <thead className="hidden text-xs uppercase tracking-wide text-text-dim sm:table-header-group">
+              <thead className="hidden text-xs uppercase tracking-wide text-muted sm:table-header-group">
                 <tr>
                   <th className="pb-2 font-medium">Source</th>
                   <th className="pb-2 font-medium">Category</th>
@@ -120,11 +120,11 @@ export default async function HealthPage() {
         </>
       )}
 
-      <p className="mt-6 text-xs text-text-dim">
+      <p className="mt-6 text-xs text-muted">
         Machine-readable:{" "}
         <Link
           href="/api/v1/health"
-          className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+          className="underline decoration-panel-edge underline-offset-2 hover:text-ink-soft"
         >
           GET /api/v1/health
         </Link>

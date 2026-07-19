@@ -27,16 +27,16 @@ function Endpoint({
   curl: string;
 }) {
   return (
-    <section className="rounded-xl border border-panel-edge bg-panel p-4 sm:p-5">
+    <section className="rounded-2xl border border-panel-edge bg-panel p-4 sm:p-5">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <span className="rounded bg-fresh/15 px-2 py-0.5 font-mono text-xs font-semibold text-fresh">
           {method}
         </span>
-        <code className="font-mono text-sm text-zinc-200">{path}</code>
-        <span className="text-xs text-text-dim">· cached {cache}</span>
+        <code className="font-mono text-sm text-ink">{path}</code>
+        <span className="text-xs text-muted">· cached {cache}</span>
       </div>
-      <p className="mb-4 text-sm leading-relaxed text-zinc-300">{summary}</p>
-      <pre className="overflow-x-auto rounded-lg border border-panel-edge bg-ink p-3 font-mono text-xs leading-relaxed text-zinc-300">
+      <p className="mb-4 text-sm leading-relaxed text-ink-soft">{summary}</p>
+      <pre className="overflow-x-auto rounded-lg border border-panel-edge bg-depth p-3 font-mono text-xs leading-relaxed text-white/90">
         <code>{curl}</code>
       </pre>
     </section>
@@ -45,7 +45,7 @@ function Endpoint({
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mt-8 mb-3 text-xs font-medium uppercase tracking-wide text-text-dim">
+    <h2 className="mt-8 mb-3 text-xs font-medium uppercase tracking-wide text-muted">
       {children}
     </h2>
   );
@@ -62,16 +62,16 @@ export default async function ApiDocsPage() {
       <header className="mb-8">
         <Link
           href="/"
-          className="text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+          className="text-xs text-muted underline decoration-panel-edge underline-offset-2 hover:text-ink-soft"
         >
           ← Dashboard
         </Link>
         <h1 className="mt-3 text-lg font-semibold tracking-tight">API</h1>
-        <p className="mt-2 text-sm leading-relaxed text-text-dim">{INTRO}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{INTRO}</p>
       </header>
 
-      <aside className="mb-8 rounded-xl border border-panel-edge bg-panel/60 p-4 text-sm text-zinc-300">
-        <h2 className="mb-1 text-xs font-medium uppercase tracking-wide text-text-dim">
+      <aside className="mb-8 rounded-2xl border border-panel-edge bg-panel/60 p-4 text-sm text-ink-soft">
+        <h2 className="mb-1 text-xs font-medium uppercase tracking-wide text-muted">
           Rate limits
         </h2>
         <p className="leading-relaxed">
@@ -204,11 +204,11 @@ export default async function ApiDocsPage() {
         />
       </div>
 
-      <aside className="mt-8 rounded-xl border border-panel-edge bg-panel/60 p-4 text-sm text-zinc-300">
-        <h2 className="mb-2 text-xs font-medium uppercase tracking-wide text-text-dim">
+      <aside className="mt-8 rounded-2xl border border-panel-edge bg-panel/60 p-4 text-sm text-ink-soft">
+        <h2 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
           Data attribution
         </h2>
-        <ul className="space-y-1 text-xs text-text-dim">
+        <ul className="space-y-1 text-xs text-muted">
           <li>FX — Central Bank of Sri Lanka (CBSL)</li>
           <li>CSE — Colombo Stock Exchange</li>
           <li>Fuel — CEYPETCO / Ministry of Energy</li>

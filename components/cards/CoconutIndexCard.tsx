@@ -13,7 +13,7 @@ import {
 function deltaClass(d: number): string {
   if (d > 0) return "text-down";
   if (d < 0) return "text-fresh";
-  return "text-text-dim";
+  return "text-muted";
 }
 
 export default function CoconutIndexCard({
@@ -56,15 +56,15 @@ export default function CoconutIndexCard({
     >
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-text-dim">Lanka Monitor</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted">Lanka Monitor</p>
           <h1
-            className={`mt-1 font-semibold tracking-tight text-zinc-100 ${
+            className={`mt-1 font-semibold tracking-tight text-ink ${
               standalone ? "text-xl sm:text-2xl" : "text-base"
             }`}
           >
             Coconut Index
           </h1>
-          <p className="mt-1 max-w-xs text-xs leading-relaxed text-text-dim">
+          <p className="mt-1 max-w-xs text-xs leading-relaxed text-muted">
             One nut, one rupee — the unofficial grocery pulse. Colombo retail from HARTI.
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function CoconutIndexCard({
           <button
             type="button"
             onClick={share}
-            className="rounded-md border border-panel-edge px-2.5 py-1 text-xs text-zinc-300 hover:bg-panel-edge/60"
+            className="rounded-md border border-panel-edge px-2.5 py-1 text-xs text-ink-soft hover:bg-panel-edge/60"
           >
             {copied ? "Copied" : "Share"}
           </button>
@@ -87,10 +87,10 @@ export default function CoconutIndexCard({
               standalone ? "text-5xl sm:text-6xl" : "text-4xl sm:text-5xl"
             }`}
           >
-            <span className="mr-1 text-2xl font-normal text-text-dim sm:text-3xl">Rs</span>
+            <span className="mr-1 text-2xl font-normal text-muted sm:text-3xl">Rs</span>
             {data.price}
           </div>
-          <p className="mt-1 text-xs text-text-dim">
+          <p className="mt-1 text-xs text-muted">
             {data.commodity} · {data.market}
           </p>
         </div>
@@ -104,11 +104,11 @@ export default function CoconutIndexCard({
         <Sparkline values={data.series} stroke="#a3e635" height={standalone ? 56 : 48} />
       </div>
 
-      <footer className="mt-4 text-xs leading-relaxed text-text-dim">
+      <footer className="mt-4 text-xs leading-relaxed text-muted">
         As of <time className="tabular">{data.asOf}</time> ·{" "}
         <a
           href={COCONUT_SOURCE.url}
-          className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+          className="underline decoration-panel-edge underline-offset-2 hover:text-ink-soft"
           rel="noopener noreferrer"
           target="_blank"
         >
