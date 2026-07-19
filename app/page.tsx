@@ -1,21 +1,39 @@
+import AqiCard from "@/components/cards/AqiCard";
+import CostOfLivingCard from "@/components/cards/CostOfLivingCard";
+import CseCard from "@/components/cards/CseCard";
 import FxCard from "@/components/cards/FxCard";
+import HydroCard from "@/components/cards/HydroCard";
 import PlaceholderCard from "@/components/cards/PlaceholderCard";
+import HolidayGlance from "@/components/HolidayGlance";
+import ColomboPortMap from "@/components/maps/ColomboPortMapLoader";
+import { getAqiData } from "@/lib/aqi";
+import { getCseData, getCseSourceStatus } from "@/lib/cse";
 import { getFxData, getSourceStatuses } from "@/lib/fx";
+import { getHydroData, getHydroSourceStatus } from "@/lib/hydro";
+import { getSlcesiData } from "@/lib/slcesi";
 
 export const revalidate = 300;
 
 const PLACEHOLDERS = [
   { title: "Weather", detail: "Forecasts and warnings from the Department of Meteorology." },
-  { title: "Power", detail: "Scheduled power interruptions from CEB / PUCSL." },
-  { title: "Fuel", detail: "CEYPETCO pump prices — petrol, diesel, kerosene." },
-  { title: "Health", detail: "Dengue and disease surveillance from the Epidemiology Unit." },
+  { title: "Power cuts", detail: "Scheduled interruptions from CEB / PUCSL — follows hydro shortfall." },
   { title: "News pulse", detail: "Clustered headlines from Sri Lankan outlets." },
   { title: "Cricket", detail: "Live scores when Sri Lanka is playing." },
 ];
 
 export default async function Dashboard() {
-  const [fx, statuses] = await Promise.all([getFxData(), getSourceStatuses()]);
+  const [fx, cse, aqi, statuses, cseSource, slcesi, hydro, hydroSource] = await Promise.all([
+    getFxData(),
+    getCseData(),
+    getAqiData(),
+    getSourceStatuses(),
+    getCseSourceStatus(),
+    Promise.resolve(getSlcesiData()),
+    getHydroData(),
+    getHydroSourceStatus(),
+  ]);
   const cbsl = statuses?.find((s) => s.id === "cbsl_fx") ?? null;
+  const openaq = statuses?.find((s) => s.id === "openaq_colombo") ?? null;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
@@ -26,8 +44,16 @@ export default async function Dashboard() {
         </p>
       </header>
 
+      <HolidayGlance />
+
+      <ColomboPortMap />
+
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+        <CostOfLivingCard data={slcesi} />
         <FxCard fx={fx} source={cbsl} />
+        <AqiCard aqi={aqi} source={openaq} />
+        <CseCard cse={cse} source={cseSource} />
+        <HydroCard hydro={hydro} source={hydroSource} />
         {PLACEHOLDERS.map((p, i) => (
           <PlaceholderCard key={p.title} title={p.title} detail={p.detail} index={i} />
         ))}
