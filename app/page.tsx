@@ -1,70 +1,107 @@
 import AqiCard from "@/components/cards/AqiCard";
+import BriefCard from "@/components/cards/BriefCard";
+import CoconutIndexCard from "@/components/cards/CoconutIndexCard";
 import CostOfLivingCard from "@/components/cards/CostOfLivingCard";
+import CricketCard from "@/components/cards/CricketCard";
 import CseCard from "@/components/cards/CseCard";
+import DengueCard from "@/components/cards/DengueCard";
+import FuelCard from "@/components/cards/FuelCard";
 import FxCard from "@/components/cards/FxCard";
 import HydroCard from "@/components/cards/HydroCard";
 import MacroCard from "@/components/cards/MacroCard";
-import PlaceholderCard from "@/components/cards/PlaceholderCard";
+import NewsPulseCard from "@/components/cards/NewsPulseCard";
+import PowerCard from "@/components/cards/PowerCard";
 import SeismicWatchCard from "@/components/cards/SeismicWatchCard";
+import WeatherCard from "@/components/cards/WeatherCard";
+import AlertBanner from "@/components/AlertBanner";
 import HolidayGlance from "@/components/HolidayGlance";
-import ColomboPortMap from "@/components/maps/ColomboPortMapLoader";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import SituationMapLoader from "@/components/maps/SituationMapLoader";
 import { getAqiData } from "@/lib/aqi";
+import { getBriefData } from "@/lib/brief";
 import { getCseData, getCseSourceStatus } from "@/lib/cse";
+import { getCricketData } from "@/lib/cricket";
+import { getDengueData } from "@/lib/dengue";
+import { getFuelData, getFuelSourceStatus } from "@/lib/fuel";
 import { getFxData, getSourceStatuses } from "@/lib/fx";
 import { getHydroData, getHydroSourceStatus } from "@/lib/hydro";
 import { getMacroData } from "@/lib/macro";
+import { getNewsData } from "@/lib/news";
+import { getPowerData, getPowerSourceStatus } from "@/lib/power";
 import { getSeismicWatchData } from "@/lib/seismic";
 import { getSlcesiData } from "@/lib/slcesi";
+import { getWeatherData } from "@/lib/weather";
+import { getCoconutIndexData } from "@/lib/coconut-index";
+import type { Metadata } from "next";
 
-export const revalidate = 300;
+export const revalidate = 120;
 
-/** S-tier / Phase 1–2 placeholders — build before Phase 5 depth cards. */
-const PLACEHOLDERS = [
-  {
-    title: "Weather",
-    detail: "Forecasts and warnings from the Department of Meteorology.",
+export const metadata: Metadata = {
+  title: "Lanka Monitor",
+  description:
+    "Real-time situational awareness for Sri Lanka — money, weather, power, health, news.",
+  openGraph: {
+    title: "Lanka Monitor",
+    description:
+      "The real-time daily-life dashboard for Sri Lanka — money, weather, power, health, news, cricket.",
+    type: "website",
+    images: ["/api/og"],
   },
-  {
-    title: "Power cuts",
-    detail: "Scheduled interruptions from CEB — idle-cheap until crisis week.",
-  },
-  {
-    title: "Fuel",
-    detail: "CEYPETCO pump prices — petrol, diesel, kerosene (Octane).",
-  },
-  {
-    title: "News pulse",
-    detail: "Clustered headlines from Sri Lankan outlets — Phase 3 brief feed.",
-  },
-  {
-    title: "Cricket",
-    detail: "Live scores when Sri Lanka is playing.",
-  },
-  {
-    title: "Health",
-    detail: "Dengue and disease surveillance from the Epidemiology Unit.",
-  },
-];
+};
 
 export default async function Dashboard() {
-  const [fx, cse, aqi, statuses, cseSource, slcesi, macro, hydro, hydroSource, seismic] =
-    await Promise.all([
-      getFxData(),
-      getCseData(),
-      getAqiData(),
-      getSourceStatuses(),
-      getCseSourceStatus(),
-      Promise.resolve(getSlcesiData()),
-      Promise.resolve(getMacroData()),
-      getHydroData(),
-      getHydroSourceStatus(),
-      getSeismicWatchData(),
-    ]);
+  const [
+    fx,
+    cse,
+    aqi,
+    statuses,
+    cseSource,
+    slcesi,
+    macro,
+    hydro,
+    hydroSource,
+    seismic,
+    fuel,
+    fuelSource,
+    weather,
+    power,
+    powerSource,
+    news,
+    brief,
+    dengue,
+    cricket,
+  ] = await Promise.all([
+    getFxData(),
+    getCseData(),
+    getAqiData(),
+    getSourceStatuses(),
+    getCseSourceStatus(),
+    Promise.resolve(getSlcesiData()),
+    Promise.resolve(getMacroData()),
+    getHydroData(),
+    getHydroSourceStatus(),
+    getSeismicWatchData(),
+    getFuelData(),
+    getFuelSourceStatus(),
+    getWeatherData(),
+    getPowerData(),
+    getPowerSourceStatus(),
+    getNewsData(),
+    getBriefData(),
+    getDengueData(),
+    getCricketData(),
+  ]);
+
+  const coconut = getCoconutIndexData();
+
   const cbsl = statuses?.find((s) => s.id === "cbsl_fx") ?? null;
   const openaq = statuses?.find((s) => s.id === "openaq_colombo") ?? null;
 
+  const telegramUrl = process.env.NEXT_PUBLIC_TELEGRAM_URL ?? null;
+
   return (
     <main className="mx-auto max-w-5xl px-4 pb-10 pt-0 sm:px-6 sm:pb-12">
+      {/* ── Sticky header ─────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-10 -mx-4 mb-4 border-b border-panel-edge/60 bg-ink/90 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:mb-6 sm:px-6 sm:py-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -73,14 +110,31 @@ export default async function Dashboard() {
               Sri Lanka, right now — money, weather, power, health, news.
             </p>
           </div>
-          <a
-            href="/health"
-            className="shrink-0 pt-1 text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-          >
-            Source health
-          </a>
+          <div className="flex shrink-0 items-center gap-3 pt-1">
+            {telegramUrl && (
+              <a
+                href={telegramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                aria-label="Lanka Monitor Telegram channel"
+              >
+                Telegram
+              </a>
+            )}
+            <a
+              href="/health"
+              className="text-xs text-text-dim underline decoration-panel-edge underline-offset-2 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              Source health
+            </a>
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
+
+      {/* ── Life-safety alert (hidden when quiet) ─────────────────────────── */}
+      <AlertBanner seismic={seismic} />
 
       <HolidayGlance />
 
@@ -88,43 +142,62 @@ export default async function Dashboard() {
         <SeismicWatchCard data={seismic} />
       </div>
 
-      {/* Money cluster — Phase 1 product surface */}
-      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
-        <FxCard fx={fx} source={cbsl} />
-        <CseCard cse={cse} source={cseSource} />
-        {PLACEHOLDERS.filter((p) =>
-          ["Weather", "Power cuts", "Fuel", "Cricket"].includes(p.title),
-        ).map((p, i) => (
-          <PlaceholderCard key={p.title} title={p.title} detail={p.detail} index={i} />
-        ))}
-      </div>
+      {/* ── Brief — full width ─────────────────────────────────────────────── */}
+      {(brief.en || brief.si || brief.ta) && (
+        <div className="mb-4">
+          <BriefCard brief={brief} />
+        </div>
+      )}
 
-      {/* Port visual — labelled demo until AIS ingest */}
+      {/* ── Money cluster ─────────────────────────────────────────────────── */}
+      <section aria-label="Economic indicators">
+        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
+          Money
+        </p>
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+          <FxCard fx={fx} source={cbsl} />
+          <CseCard cse={cse} source={cseSource} />
+          <FuelCard fuel={fuel} source={fuelSource} />
+        </div>
+      </section>
+
+      {/* ── Operational cluster ───────────────────────────────────────────── */}
+      <section aria-label="Operational status">
+        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
+          Today
+        </p>
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+          <WeatherCard weather={weather} />
+          <PowerCard power={power} source={powerSource} />
+          <CricketCard cricket={cricket} />
+        </div>
+      </section>
+
+      {/* ── Situation map (replaces port demo) ────────────────────────────── */}
       <div className="mb-4">
         <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
-          Port of Colombo · demo density · AIS ingest pending
+          Map · weather, outages, quakes
         </p>
-        <ColomboPortMap />
+        <SituationMapLoader seismic={seismic} />
       </div>
 
-      {/* Phase 5 depth scaffolds — clearly secondary until retention proven */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
-        <CostOfLivingCard data={slcesi} />
-        <AqiCard aqi={aqi} source={openaq} />
-        <MacroCard data={macro} />
-        <HydroCard hydro={hydro} source={hydroSource} />
-        {PLACEHOLDERS.filter((p) =>
-          ["News pulse", "Health"].includes(p.title),
-        ).map((p, i) => (
-          <PlaceholderCard
-            key={p.title}
-            title={p.title}
-            detail={p.detail}
-            index={i + 4}
-          />
-        ))}
-      </div>
+      {/* ── Depth cards ───────────────────────────────────────────────────── */}
+      <section aria-label="Depth data">
+        <p className="mb-1.5 text-[11px] uppercase tracking-wide text-text-dim">
+          Depth
+        </p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+          <NewsPulseCard news={news} />
+          <DengueCard dengue={dengue} />
+          <CostOfLivingCard data={slcesi} />
+          <AqiCard aqi={aqi} source={openaq} />
+          <MacroCard data={macro} />
+          <HydroCard hydro={hydro} source={hydroSource} />
+          <CoconutIndexCard data={coconut} />
+        </div>
+      </section>
 
+      {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer
         className="mt-10 border-t border-panel-edge pt-4 text-xs text-text-dim"
         aria-label="Site footer"

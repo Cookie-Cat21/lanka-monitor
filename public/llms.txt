@@ -13,10 +13,38 @@ This is not investigative journalism. It is the morning check on a phone.
 ## Public API
 
 Read-only JSON. No authentication. Cache responses; do not hammer upstream institutions.
+All endpoints return `generated_at` (ISO timestamp). Stale/down sources are labeled explicitly.
 
+### System
 - GET /api/v1/health — freshness of every source (`fresh` | `stale` | `down` | `inactive`)
+
+### Finance
 - GET /api/v1/fx — latest USD/LKR buy/sell + ~30-day series (Central Bank of Sri Lanka)
-- GET /api/v1/aqi — Colombo air quality when OpenAQ ingest is active
+- GET /api/v1/cse — ASPI and S&P SL20 index latest close + 30-day series (Colombo Stock Exchange)
+- GET /api/v1/fuel — CEYPETCO pump prices: petrol_92, petrol_95, diesel, kerosene (LKR/litre)
+
+### Environment
+- GET /api/v1/weather — Colombo weather: temp_c, rain_mm, wind_kmh, humidity, weather_code (Open-Meteo)
+- GET /api/v1/aqi — Colombo PM2.5 and AQI when OpenAQ ingest active
+
+### Infrastructure
+- GET /api/v1/power — CEB scheduled outage count + 14-day daily history
+
+### Health
+- GET /api/v1/dengue — national dengue cases (week) + WoW delta + top districts (Epidemiology Unit)
+
+### News & Brief
+- GET /api/v1/news — latest articles with optional cluster grouping
+- GET /api/v1/brief — daily situation brief in EN/Sinhala/Tamil with citations
+
+### Sport
+- GET /api/v1/cricket — Sri Lanka cricket scores; feed_status `inactive` when CRICKET_API_KEY unset
+
+### Notifications
+- POST /api/telegram — send message to Telegram channel; 503 if TELEGRAM_BOT_TOKEN+CHAT_ID unset
+
+### Open Graph
+- GET /api/og — 1200×630 OG image with latest USD/LKR rate
 
 Every response should be treated as timestamped. Attribute upstream sources and Lanka Monitor when republishing.
 
@@ -25,9 +53,15 @@ Every response should be treated as timestamped. Attribute upstream sources and 
 - Server-side cache only — page loads never hit government websites directly
 - Honest User-Agent: LankaMonitorBot with contact URL
 - Independent source failures — one dead scraper never blanks the page
+- Honest empty states — cards display "refuses to guess" rather than stale guesses
 - MIT licence — https://github.com/Cookie-Cat21/lanka-monitor
 
-## Optional
+## Rate limits
+
+60 requests/minute per IP for /api/v1/*. Best-effort (per-instance Map on serverless).
+For sustained access, cache locally and poll at the stated revalidation interval.
+
+## Optional pages
 
 - /docs — human API notes with curl examples
 - /health — source status UI

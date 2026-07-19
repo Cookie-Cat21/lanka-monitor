@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Noto_Sans_Sinhala, Noto_Sans_Tamil } from "next/font/google";
+import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 import "./globals.css";
 
 const body = IBM_Plex_Sans({
@@ -23,7 +24,11 @@ const tamil = Noto_Sans_Tamil({
   display: "swap",
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL
+  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://lanka-monitor.vercel.app");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: "Lanka Monitor",
   description:
     "Real-time situational awareness for Sri Lanka — money, weather, power, health, news.",
@@ -41,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${body.variable} ${sinhala.variable} ${tamil.variable}`}>
       <body className="min-h-screen bg-transparent text-zinc-100 antialiased">
+        <AnalyticsBeacon />
         {children}
       </body>
     </html>
