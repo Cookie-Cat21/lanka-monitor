@@ -1,0 +1,4 @@
+# Dependencies for the Vercel Python function (api/ingest.py).
+# Mirrors ingest/requirements.txt — keep the two in sync.
+requests>=2.32
+beautifulsoup4>=4.12
