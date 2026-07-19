@@ -13,7 +13,7 @@ export default function HolidayGlance() {
       <span
         className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide sm:text-[11px] ${
           next.kind === "poya"
-            ? "bg-indigo-500/15 text-indigo-300"
+            ? "bg-teal-500/15 text-teal-300"
             : "bg-amber-500/10 text-amber-200/90"
         }`}
       >

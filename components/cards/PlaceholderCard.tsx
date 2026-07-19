@@ -1,7 +1,25 @@
 "use client";
 
-import { motion } from "framer-motion";
-import FreshnessBadge from "@/components/FreshnessBadge";
+import {
+  Activity,
+  CloudRain,
+  Fuel,
+  Newspaper,
+  Trophy,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+import CardShell from "@/components/CardShell";
+
+const ICONS: Record<string, LucideIcon> = {
+  Weather: CloudRain,
+  "Power cuts": Zap,
+  Power: Zap,
+  Fuel: Fuel,
+  Health: Activity,
+  "News pulse": Newspaper,
+  Cricket: Trophy,
+};
 
 export default function PlaceholderCard({
   title,
@@ -12,18 +30,26 @@ export default function PlaceholderCard({
   detail: string;
   index?: number;
 }) {
+  const Icon = ICONS[title];
+
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.05 * (index + 1), ease: "easeOut" }}
-      className="rounded-xl border border-dashed border-panel-edge bg-panel/50 p-4 sm:p-5"
+    <CardShell
+      title={title}
+      status="inactive"
+      lastSuccessAt={null}
+      delay={0.05 * (index + 1)}
+      className="min-h-[120px] border-dashed bg-panel/50"
     >
-      <header className="mb-2 flex items-baseline justify-between gap-2">
-        <h2 className="text-sm font-medium text-zinc-400">{title}</h2>
-        <FreshnessBadge status="inactive" lastSuccessAt={null} />
-      </header>
-      <p className="text-xs leading-relaxed text-text-dim">{detail}</p>
-    </motion.article>
+      <div className="flex gap-3">
+        {Icon ? (
+          <Icon
+            className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600"
+            strokeWidth={1.75}
+            aria-hidden
+          />
+        ) : null}
+        <p className="text-xs leading-relaxed text-text-dim">{detail}</p>
+      </div>
+    </CardShell>
   );
 }

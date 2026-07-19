@@ -1,0 +1,38 @@
+# Lanka Monitor
+
+> Real-time situational awareness dashboard for Sri Lanka — money, weather, power, health, news, cricket.
+
+## About
+
+Lanka Monitor is a daily-life utility for Sri Lankans: one surface where the rupee, fuel price,
+power cuts, weather warnings and news pulse explain each other. Trust is the product — every card
+shows its own freshness timestamp. Stale data is surfaced, never silently served.
+
+This is not investigative journalism. It is the morning check on a phone.
+
+## Public API
+
+Read-only JSON. No authentication. Cache responses; do not hammer upstream institutions.
+
+- GET /api/v1/health — freshness of every source (`fresh` | `stale` | `down` | `inactive`)
+- GET /api/v1/fx — latest USD/LKR buy/sell + ~30-day series (Central Bank of Sri Lanka)
+- GET /api/v1/aqi — Colombo air quality when OpenAQ ingest is active
+
+Every response should be treated as timestamped. Attribute upstream sources and Lanka Monitor when republishing.
+
+## Data principles
+
+- Server-side cache only — page loads never hit government websites directly
+- Honest User-Agent: LankaMonitorBot with contact URL
+- Independent source failures — one dead scraper never blanks the page
+- MIT licence — https://github.com/Cookie-Cat21/lanka-monitor
+
+## Optional
+
+- /docs — human API notes with curl examples
+- /health — source status UI
+- /coconut — Coconut Index share card (HARTI food prices, when live)
+
+## Contact
+
+GitHub issues: https://github.com/Cookie-Cat21/lanka-monitor/issues

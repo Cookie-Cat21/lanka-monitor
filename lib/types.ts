@@ -84,3 +84,5 @@ export interface CseData {
   aspi: CseIndex;
   sl20: CseIndex;
 }
+
+export type { SeismicEvent, SeismicWatchData } from "./seismic";

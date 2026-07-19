@@ -1,26 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import RelativeTime from "@/components/RelativeTime";
 import type { SeismicWatchData } from "@/lib/seismic";
-
-function relativeTime(iso: string): string {
-  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 48) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
-}
 
 export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
   const active = data.status === "watch" && data.alert;
-  const checked = relativeTime(data.checked_at);
+  const reduce = useReducedMotion();
 
   if (active && data.alert) {
     const e = data.alert;
     return (
       <motion.article
-        initial={{ opacity: 0, y: 8 }}
+        initial={reduce ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         className="rounded-xl border border-amber-500/40 bg-amber-950/20 p-4 sm:p-5"
@@ -44,7 +36,7 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
 
         <p className="mt-2 text-xs leading-relaxed text-amber-100/80">
           {e.distance_km.toLocaleString()} km from Colombo · {e.depth_km.toFixed(0)} km deep ·{" "}
-          <time className="tabular">{relativeTime(e.observed_at)}</time>
+          <RelativeTime iso={e.observed_at} />
           {e.tsunami
             ? " · USGS tsunami property set — follow Dept. of Meteorology coastal advice."
             : " · Large nearby quake — not an official warning."}
@@ -60,7 +52,7 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
             USGS event
           </a>
           {" · checked "}
-          <time className="tabular">{checked}</time>
+          <RelativeTime iso={data.checked_at} />
         </footer>
       </motion.article>
     );
@@ -68,7 +60,7 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 8 }}
+      initial={reduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       className="flex items-center gap-2 rounded-lg border border-panel-edge/40 bg-panel/25 px-3 py-2.5 sm:gap-3 sm:px-4"
@@ -83,9 +75,9 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
           ? "USGS unreachable — retrying"
           : "Quiet · no Sri Lanka reach in 72 h"}
       </span>
-      <time className="tabular ml-auto shrink-0 text-[11px] text-text-dim sm:text-xs">
-        USGS · {checked}
-      </time>
+      <span className="tabular ml-auto shrink-0 text-[11px] text-text-dim sm:text-xs">
+        USGS · <RelativeTime iso={data.checked_at} />
+      </span>
     </motion.article>
   );
 }
