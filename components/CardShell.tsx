@@ -31,12 +31,18 @@ export default function CardShell({
   const reduce = useReducedMotion();
   const resolvedStatus = status ?? source?.status ?? "down";
   const resolvedAt = lastSuccessAt ?? source?.last_success_at ?? null;
+  // Never start at opacity 0 — SSR / no-JS / slow hydrate must stay readable.
+  const motionProps = reduce
+    ? {}
+    : {
+        initial: { opacity: 1, y: 0 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.35, delay, ease: "easeOut" as const },
+      };
 
   return (
     <motion.article
-      initial={reduce ? false : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay, ease: "easeOut" }}
+      {...motionProps}
       className={`min-h-[160px] rounded-xl border border-panel-edge bg-panel p-4 sm:p-5 ${className}`}
       style={style}
     >

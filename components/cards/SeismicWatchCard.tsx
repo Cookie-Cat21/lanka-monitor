@@ -12,7 +12,7 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
     const e = data.alert;
     return (
       <motion.article
-        initial={reduce ? false : { opacity: 0, y: 8 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         className="rounded-xl border border-amber-500/40 bg-amber-950/20 p-4 sm:p-5"
@@ -60,7 +60,7 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
 
   return (
     <motion.article
-      initial={reduce ? false : { opacity: 0, y: 8 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       className="flex items-center gap-2 rounded-lg border border-panel-edge/40 bg-panel/25 px-3 py-2.5 sm:gap-3 sm:px-4"
