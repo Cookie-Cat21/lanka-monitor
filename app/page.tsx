@@ -3,13 +3,17 @@ import CostOfLivingCard from "@/components/cards/CostOfLivingCard";
 import CseCard from "@/components/cards/CseCard";
 import FxCard from "@/components/cards/FxCard";
 import HydroCard from "@/components/cards/HydroCard";
+import MacroCard from "@/components/cards/MacroCard";
 import PlaceholderCard from "@/components/cards/PlaceholderCard";
+import SeismicWatchCard from "@/components/cards/SeismicWatchCard";
 import HolidayGlance from "@/components/HolidayGlance";
 import ColomboPortMap from "@/components/maps/ColomboPortMapLoader";
 import { getAqiData } from "@/lib/aqi";
 import { getCseData, getCseSourceStatus } from "@/lib/cse";
 import { getFxData, getSourceStatuses } from "@/lib/fx";
 import { getHydroData, getHydroSourceStatus } from "@/lib/hydro";
+import { getMacroData } from "@/lib/macro";
+import { getSeismicWatchData } from "@/lib/seismic";
 import { getSlcesiData } from "@/lib/slcesi";
 
 export const revalidate = 300;
@@ -22,16 +26,19 @@ const PLACEHOLDERS = [
 ];
 
 export default async function Dashboard() {
-  const [fx, cse, aqi, statuses, cseSource, slcesi, hydro, hydroSource] = await Promise.all([
-    getFxData(),
-    getCseData(),
-    getAqiData(),
-    getSourceStatuses(),
-    getCseSourceStatus(),
-    Promise.resolve(getSlcesiData()),
-    getHydroData(),
-    getHydroSourceStatus(),
-  ]);
+  const [fx, cse, aqi, statuses, cseSource, slcesi, macro, hydro, hydroSource, seismic] =
+    await Promise.all([
+      getFxData(),
+      getCseData(),
+      getAqiData(),
+      getSourceStatuses(),
+      getCseSourceStatus(),
+      Promise.resolve(getSlcesiData()),
+      Promise.resolve(getMacroData()),
+      getHydroData(),
+      getHydroSourceStatus(),
+      getSeismicWatchData(),
+    ]);
   const cbsl = statuses?.find((s) => s.id === "cbsl_fx") ?? null;
   const openaq = statuses?.find((s) => s.id === "openaq_colombo") ?? null;
 
@@ -46,6 +53,10 @@ export default async function Dashboard() {
 
       <HolidayGlance />
 
+      <div className="mb-4">
+        <SeismicWatchCard data={seismic} />
+      </div>
+
       <ColomboPortMap />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
@@ -53,6 +64,7 @@ export default async function Dashboard() {
         <FxCard fx={fx} source={cbsl} />
         <AqiCard aqi={aqi} source={openaq} />
         <CseCard cse={cse} source={cseSource} />
+        <MacroCard data={macro} />
         <HydroCard hydro={hydro} source={hydroSource} />
         {PLACEHOLDERS.map((p, i) => (
           <PlaceholderCard key={p.title} title={p.title} detail={p.detail} index={i} />
@@ -66,6 +78,13 @@ export default async function Dashboard() {
           href="https://github.com/Cookie-Cat21/lanka-monitor"
         >
           Source on GitHub
+        </a>
+        {" · "}
+        <a
+          className="underline decoration-panel-edge underline-offset-2 hover:text-zinc-300"
+          href="/docs"
+        >
+          API docs
         </a>
         {" · "}
         <a
