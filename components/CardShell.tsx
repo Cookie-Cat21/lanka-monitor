@@ -12,7 +12,6 @@ const STATUS_RAIL: Record<FreshnessStatus, string> = {
   inactive: "bg-panel-edge",
 };
 
-/** Tremor/HyperUI-inspired KPI panel — status rail + clear hierarchy. */
 export default function CardShell({
   title,
   subtitle,
@@ -43,18 +42,18 @@ export default function CardShell({
   return (
     <motion.article
       initial={false}
-      whileHover={reduce ? undefined : { y: -2 }}
-      transition={{ duration: 0.2, delay }}
-      className={`group relative min-h-[160px] overflow-hidden rounded-2xl border border-panel-edge bg-panel p-4 shadow-[0_1px_0_rgba(12,31,36,0.04)] sm:p-5 ${className}`}
+      whileHover={reduce ? undefined : { y: -1 }}
+      transition={{ duration: 0.15, delay }}
+      className={`relative min-h-[160px] overflow-hidden rounded-xl border border-panel-edge bg-panel p-4 sm:p-5 ${className}`}
       style={style}
     >
       <span
         aria-hidden
         className={`absolute inset-y-3 left-0 w-[3px] rounded-full ${STATUS_RAIL[resolvedStatus]}`}
       />
-      <header className="mb-3 flex items-start justify-between gap-2 pl-2">
+      <header className="mb-3 flex items-start justify-between gap-2 pl-2.5">
         <div className="min-w-0">
-          <h2 className="text-[13px] font-semibold tracking-tight text-ink-soft">
+          <h2 className="font-display text-sm font-semibold tracking-tight text-ink">
             {title}
           </h2>
           {subtitle ? (
@@ -63,9 +62,9 @@ export default function CardShell({
         </div>
         <FreshnessBadge status={resolvedStatus} lastSuccessAt={resolvedAt} />
       </header>
-      <div className="pl-2">{children}</div>
+      <div className="pl-2.5">{children}</div>
       {footer ? (
-        <footer className="mt-3 border-t border-panel-edge/70 pt-2 pl-2 text-[11px] leading-relaxed text-muted">
+        <footer className="mt-3 border-t border-panel-edge pt-2 pl-2.5 text-[11px] leading-relaxed text-muted">
           {footer}
         </footer>
       ) : null}

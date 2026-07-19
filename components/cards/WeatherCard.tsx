@@ -6,7 +6,7 @@ import type { SourceStatus, WeatherData } from "@/lib/types";
 
 function WeatherCodeIcon({ code }: { code: number }) {
   if (code >= 51) {
-    return <CloudRain className="h-8 w-8 text-lagoon" strokeWidth={1.5} aria-hidden />;
+    return <CloudRain className="h-8 w-8 text-ink" strokeWidth={1.5} aria-hidden />;
   }
   return <Cloud className="h-8 w-8 text-muted" strokeWidth={1.5} aria-hidden />;
 }

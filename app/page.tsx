@@ -101,7 +101,7 @@ export default async function Dashboard() {
   const telegramUrl = process.env.NEXT_PUBLIC_TELEGRAM_URL ?? null;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-14 pt-5 sm:px-6 sm:pt-8">
+    <main className="mx-auto max-w-5xl px-4 pb-14 pt-4 sm:px-6 sm:pt-6">
       <SiteHeader telegramUrl={telegramUrl} />
 
       <AlertBanner seismic={seismic} />

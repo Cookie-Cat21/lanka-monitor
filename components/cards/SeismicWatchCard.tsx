@@ -59,7 +59,7 @@ export default function SeismicWatchCard({ data }: { data: SeismicWatchData }) {
       aria-label="Indian Ocean earthquake watch — quiet"
     >
       <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fresh" aria-hidden />
-      <h2 className="shrink-0 text-xs font-semibold text-ink-soft sm:text-sm">
+      <h2 className="font-display shrink-0 text-xs font-semibold text-ink sm:text-sm">
         Indian Ocean watch
       </h2>
       <span className="min-w-0 truncate text-xs text-muted">

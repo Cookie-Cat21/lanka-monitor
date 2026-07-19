@@ -1,24 +1,30 @@
 import type { Metadata } from "next";
-import {
-  Fraunces,
-  Noto_Sans_Sinhala,
-  Noto_Sans_Tamil,
-  Source_Sans_3,
-} from "next/font/google";
+import localFont from "next/font/local";
+import { Inter, Noto_Sans_Sinhala, Noto_Sans_Tamil } from "next/font/google";
 import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 import "./globals.css";
 
-const display = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
+const calSans = localFont({
+  src: [
+    {
+      path: "../public/fonts/CalSans-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/CalSans-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-cal",
   display: "swap",
 });
 
-const body = Source_Sans_3({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -61,7 +67,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${sinhala.variable} ${tamil.variable}`}
+      className={`${calSans.variable} ${inter.variable} ${sinhala.variable} ${tamil.variable}`}
     >
       <body className="min-h-screen bg-transparent text-ink antialiased">
         <AnalyticsBeacon />

@@ -74,7 +74,7 @@ export default function FxCard({
           </div>
 
           <div className="mt-4">
-            <Sparkline values={sellSeries} stroke="#0e7490" />
+            <Sparkline values={sellSeries} stroke="#18181b" />
           </div>
         </>
       ) : (

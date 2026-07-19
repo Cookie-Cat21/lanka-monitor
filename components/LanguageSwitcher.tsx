@@ -36,16 +36,16 @@ export default function LanguageSwitcher() {
     <div
       role="group"
       aria-label="Interface language"
-      className="flex items-center gap-0.5 rounded-full border border-panel-edge bg-canvas/80 p-0.5"
+      className="flex items-center gap-0.5 rounded-lg border border-panel-edge bg-panel p-0.5"
     >
       {LOCALES.map(({ code, label }) => (
         <button
           key={code}
           onClick={() => choose(code)}
           aria-pressed={locale === code}
-          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 ${
+          className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 ${
             locale === code
-              ? "bg-lagoon text-white shadow-sm"
+              ? "bg-accent text-white"
               : "text-muted hover:text-ink"
           }`}
         >

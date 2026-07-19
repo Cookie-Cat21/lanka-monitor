@@ -1,38 +1,36 @@
 @import "tailwindcss";
 
 /*
-  Lanka Monitor — "Indian Ocean morning"
-  Patterns adapted from Tremor KPI cards + HyperUI stats/badges.
-  Skipped: DaisyUI themes, Magic beams, Aceternity carousels, Cult shaders.
+  Lanka Monitor — clean light utility
+  Display: Cal Sans · Body: Inter
 */
 
 @theme {
-  --color-canvas: #e7f1f3;
-  --color-ink: #0c1f24;
-  --color-ink-soft: #1e3a42;
-  --color-muted: #5a727a;
-  --color-text-dim: #5a727a;
+  --color-canvas: #f4f4f5;
+  --color-ink: #09090b;
+  --color-ink-soft: #27272a;
+  --color-muted: #71717a;
+  --color-text-dim: #71717a;
   --color-panel: #ffffff;
-  --color-panel-edge: #c5d9dd;
-  --color-lagoon: #0e7490;
-  --color-lagoon-soft: #ecfeff;
-  --color-fresh: #0f766e;
-  --color-stale: #b45309;
-  --color-down: #b91c1c;
-  --color-depth: #134e4a;
-  --font-display: var(--font-display), ui-serif, Georgia, serif;
-  --font-sans: var(--font-body), "Noto Sans Sinhala", "Noto Sans Tamil",
-    ui-sans-serif, sans-serif;
+  --color-panel-edge: #e4e4e7;
+  --color-accent: #18181b;
+  --color-accent-soft: #f4f4f5;
+  --color-lagoon: #18181b;
+  --color-lagoon-soft: #f4f4f5;
+  --color-fresh: #16a34a;
+  --color-stale: #ca8a04;
+  --color-down: #dc2626;
+  --color-depth: #09090b;
+  --font-display: var(--font-cal), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), "Noto Sans Sinhala", "Noto Sans Tamil",
+    ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
   color-scheme: light;
   background-color: var(--color-canvas);
   background-image:
-    radial-gradient(90% 60% at 10% -10%, rgba(14, 116, 144, 0.18), transparent 55%),
-    radial-gradient(70% 50% at 100% 0%, rgba(15, 118, 110, 0.12), transparent 50%),
-    radial-gradient(60% 40% at 80% 100%, rgba(14, 116, 144, 0.1), transparent 45%),
-    linear-gradient(180deg, #f3fafb 0%, #e7f1f3 45%, #ddecee 100%);
+    linear-gradient(180deg, #fafafa 0%, #f4f4f5 40%, #efeff1 100%);
   background-attachment: fixed;
 }
 
@@ -48,8 +46,12 @@ body::before {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.45;
+  background-image:
+    linear-gradient(rgba(9, 9, 11, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(9, 9, 11, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
 }
 
 body > * {
@@ -65,20 +67,20 @@ body > * {
   font-variant-numeric: tabular-nums;
 }
 
-/* Tremor-style KPI value */
 .kpi-value {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   line-height: 1;
 }
 
 .section-label {
-  font-size: 0.68rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-lagoon);
+  color: var(--color-muted);
 }
 
 .link-quiet {
@@ -88,7 +90,7 @@ body > * {
 }
 .link-quiet:hover {
   color: var(--color-ink);
-  text-decoration-color: var(--color-lagoon);
+  text-decoration-color: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

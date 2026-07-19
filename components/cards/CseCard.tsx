@@ -49,7 +49,7 @@ function IndexBlock({ label, index }: { label: string; index: CseIndex }) {
     delta === null || delta === 0
       ? "#5a727a"
       : delta > 0
-        ? "#0f766e"
+        ? "#16a34a"
         : "#b91c1c";
 
   return (

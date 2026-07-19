@@ -2,7 +2,7 @@ export default function Sparkline({
   values,
   width = 220,
   height = 48,
-  stroke = "#0e7490",
+  stroke = "#18181b",
 }: {
   values: number[];
   width?: number;
